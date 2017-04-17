@@ -5,7 +5,7 @@ var height = 500;
 
 // Set up a projection for England which is centered and
 // scaled appropriately
-var projection = d3.geo.albers()
+var projection = d3.geoAlbers()
     .center([0, 55.4])
     .rotate([4.4, 0])
     .parallels([50, 60])
@@ -21,22 +21,19 @@ var svg = d3.select("body").append("svg")
 
 // Queue a sequence of requests for drawing the map
 d3.queue()
-    .defer(d3.json, "data/topo_uk.json")
-    .await(function(error, us, airport_data, flight_data) {
+    .defer(d3.json, 'data/uk.json')
+    .await(function(error, uk) {
         // Once all requests (currently only one) are complete, this function runs
 
         // Draw land
-        svg.selectAll(".subunit")
-            .data(topojson.feature(uk, uk.objects['topo_uk']).features)
-            .enter().append("path")
+        svg.append('path')
+            .datum(topojson.feature(uk, uk.objects.land))
             .attr("class", "feature")
             .attr("d", path);
 
         svg.append("path")
-            .datum(topojson.mesh(uk, uk.objects['topo_uk'],
+            .datum(topojson.mesh(uk, uk.objects.wards,
                                  function(a, b) { return a !== b; }))
             .attr("class", "mesh")
             .attr("d", path);      
     });
-
-     
