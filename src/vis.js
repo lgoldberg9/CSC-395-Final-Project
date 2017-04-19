@@ -1,4 +1,3 @@
-
 // Define dimensions for visualization
 var width  = 960;
 var height = 500;
@@ -21,8 +20,12 @@ var svg = d3.select("body").append("svg")
 
 // Queue a sequence of requests for drawing the map
 d3.queue()
-    .defer(d3.json, 'data/uk.json')
+    .defer(d3.json, 'data/uk_other.json')
     .await(function(error, uk) {
+        if (error) {
+            console.error(error);
+        }
+        console.log(uk);
         // Once all requests (currently only one) are complete, this function runs
 
         // Draw land
