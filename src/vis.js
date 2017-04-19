@@ -5,11 +5,11 @@ var height = 500;
 // Set up a projection for England which is centered and
 // scaled appropriately
 var projection = d3.geoAlbers()
-    .center([0, 55.4])
+//    .center([0, 55.4])
     .rotate([4.4, 0])
     .parallels([50, 60])
-    .scale(1200 * 5)
-    .translate([width / 2, height / 2]);
+    .scale(1200 * 5);
+//    .translate([width / 2, height / 2]);
 
 var path = d3.geoPath().projection(projection);
 
@@ -20,7 +20,7 @@ var svg = d3.select("body").append("svg")
 
 // Queue a sequence of requests for drawing the map
 d3.queue()
-    .defer(d3.json, 'data/uk_other.json')
+    .defer(d3.json, '../data/uk.json')
     .await(function(error, uk) {
         if (error) {
             console.error(error);
@@ -30,7 +30,7 @@ d3.queue()
 
         // Draw land
         svg.append('path')
-            .datum(topojson.feature(uk, uk.objects.land))
+            .datum(topojson.feature(uk, uk.objects.wards))
             .attr("class", "feature")
             .attr("d", path);
 
