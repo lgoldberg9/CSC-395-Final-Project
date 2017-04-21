@@ -12,8 +12,8 @@ h3 { font-size: 1.5em; }
     fill: #eee;
 }
 
-.ward-boundary {
+.lad-boundary {
     fill: none;
-    stroke: #fff;
+    stroke: #aaa;
     stroke-width: 1px;
 }
