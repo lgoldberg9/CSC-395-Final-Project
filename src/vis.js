@@ -31,12 +31,12 @@ d3.queue()
         // Draw land
         svg.append('path')
             .datum(topojson.feature(uk, uk.objects.wards))
-            .attr("class", "feature")
+            .attr("class", "land")
             .attr("d", path);
 
         svg.append("path")
             .datum(topojson.mesh(uk, uk.objects.wards,
                                  function(a, b) { return a !== b; }))
-            .attr("class", "mesh")
+            .attr("class", "ward-boundary")
             .attr("d", path);      
     });
