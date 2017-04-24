@@ -24,6 +24,10 @@ h3 { font-size: 1.5em; }
   margin-top: 1em;
 }
 
+.controls {
+    margin: 10px;
+}
+
 /* Add some space above the map */
 #map svg {
     margin-top: 3em;
