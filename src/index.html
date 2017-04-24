@@ -14,10 +14,40 @@
   </head>
   <body>
     <div class="full-map-container">
-      <div id="controls">
-        <h1>This is a test, behold.</h1>
-      </div>
-      <div id="map">
+      <div class="row">
+	<div id="Controls" class="col-sm-3 col-md-3 col-lg-2 sidebar">
+          <h1>This is a test, behold.</h1>
+	  <h1>Flight Data</h1>
+          
+          <h4>Carrier</h4>
+          <select id="carrier">
+            <option value="all" selected>All</option>
+          </select>
+          
+          <h4>Day of Week</h4>
+          <div class="checkbox">
+            <label><input id="monday" type="checkbox" checked> Monday</label>
+          </div>
+          <div class="checkbox">
+            <label><input id="tuesday" type="checkbox" checked> Tuesday</label>
+          </div>
+          <div class="checkbox">
+            <label><input id="wednesday" type="checkbox" checked> Wednesday</label>
+          </div>
+          <div class="checkbox">
+            <label><input id="thursday" type="checkbox" checked> Thursday</label>
+          </div>
+          <div class="checkbox">
+            <label><input id="friday" type="checkbox" checked> Friday</label>
+          </div>
+          <div class="checkbox">
+            <label><input id="saturday" type="checkbox" checked> Saturday</label>
+          </div>
+          <div class="checkbox">
+            <label><input id="sunday" type="checkbox" checked> Sunday</label>
+	  </div>
+	</div>
+	<div id="map"></div>
       </div>
     </div>
     <script type="text/javascript" src="vis.js"></script>
