@@ -4,3 +4,8 @@
 2. cync the data with handlers and sidebars
 3. colorby within each region
 4. zoom in (see the example Logan found)
+
+maybe two or three maps to compare more than one variables?
+
+multiple maps demo:
+http://blog.webkid.io/multiple-maps-d3/
