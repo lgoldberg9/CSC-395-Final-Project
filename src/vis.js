@@ -20,7 +20,7 @@ var svg = d3.select("#map").append("svg")
 
 // Queue a sequence of requests for drawing the map
 d3.queue()
-    .defer(d3.json, '../data/uk_other.json')
+    .defer(d3.json, '../data/uk.json')
     .await(function(error, uk) {
         if (error) {
             console.error(error);
