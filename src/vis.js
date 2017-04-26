@@ -1,15 +1,15 @@
 // Define dimensions for visualization
-var width  = 1800;
+var width  = 1000;
 var height = 800;
 
 // Set up a projection for England which is centered and
 // scaled appropriately
 var projection = d3.geoAlbers()
-    .center([0, 55.4])
+    .center([-2, 55.4])
     .rotate([4.6, 0])
     .parallels([50, 60])
     .scale(1200 * 5)
-    .translate([width / 2, height / 4]);
+    .translate([width / 2.75, height / 16]);
 
 var path = d3.geoPath().projection(projection);
 
@@ -17,6 +17,7 @@ var path = d3.geoPath().projection(projection);
 var svg = d3.select("#map").append("svg")
     .attr("width", width)
     .attr("height", height);
+
 
 // Queue a sequence of requests for drawing the map
 d3.queue()
