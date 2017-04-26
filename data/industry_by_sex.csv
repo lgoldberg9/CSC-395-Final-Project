@@ -1,12 +1,3 @@
-
-"KS605EW to KS607EW - Industry by sex"
-"ONS Crown Copyright Reserved [from Nomis on 14 April 2017]"
-"Population :","All usual residents aged 16 to 74 in employment the week before the census"
-"Units      :","Persons"
-"Date       :","2011"
-"Rural Urban:","Total"
-"Sex        :","All persons"
-
 "local authority: district / unitary (prior to April 2015)","All categories: Industry","%","A Agriculture, forestry and fishing","%","B Mining and quarrying","%","C Manufacturing","%","D Electricity, gas, steam and air conditioning supply","%","E Water supply; sewerage, waste management and remediation activities","%","F Construction","%","G Wholesale and retail trade; repair of motor vehicles and motor cycles","%","H Transport and storage","%","I Accommodation and food service activities","%","J Information and communication","%","K Financial and insurance activities","%","L Real estate activities","%","M Professional, scientific and technical activities","%","N Administrative and support service activities","%","O Public administration and defence; compulsory social security","%","P Education","%","Q Human health and social work activities","%","R, S, T, U Other","%"
 
 "Darlington",49014,100.0,303,0.6,117,0.2,4900,10.0,185,0.4,295,0.6,3743,7.6,8107,16.5,2525,5.2,2698,5.5,2165,4.4,1880,3.8,500,1.0,2225,4.5,2086,4.3,3808,7.8,4211,8.6,7259,14.8,2007,4.1
@@ -1103,12 +1094,3 @@
 "Torfaen",19403,100.0,35,0.2,0,0.0,1330,6.9,55,0.3,56,0.3,371,1.9,3141,16.2,305,1.6,1166,6.0,197,1.0,720,3.7,457,2.4,646,3.3,637,3.3,2164,11.2,2658,13.7,4463,23.0,1002,5.2
 "Monmouthshire",20177,100.0,342,1.7,5,0.0,856,4.2,42,0.2,62,0.3,451,2.2,3221,16.0,316,1.6,1428,7.1,390,1.9,699,3.5,357,1.8,1158,5.7,629,3.1,1395,6.9,3193,15.8,4460,22.1,1173,5.8
 "Newport",30775,100.0,56,0.2,5,0.0,1319,4.3,154,0.5,101,0.3,601,2.0,5246,17.0,478,1.6,2326,7.6,558,1.8,1835,6.0,548,1.8,1274,4.1,1251,4.1,2635,8.6,3916,12.7,7127,23.2,1345,4.4
-
-
-
-
-"","In order to protect against disclosure of personal information, records"
-"","have been swapped between different geographic areas. Some counts will"
-"","be affected, particularly small counts at the lowest geographies"
-"","be affected, particularly small counts at the lowest geographies"
-

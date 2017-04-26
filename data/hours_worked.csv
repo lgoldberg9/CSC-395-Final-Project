@@ -1,11 +1,3 @@
-
-"KS604EW - Hours worked"
-"ONS Crown Copyright Reserved [from Nomis on 14 April 2017]"
-"Population :","All usual residents aged 16 to 74 in employment the week before the census"
-"Units      :","Persons"
-"Date       :","2011"
-"Rural Urban:","Total"
-
 "local authority: district / unitary (prior to April 2015)","All usual residents aged 16 to 74 in employment the week before the census","%","Part-time: 15 hours or less worked","%","Part-time: 16 to 30 hours worked","%","Full-time: 31 to 48 hours worked","%","Full-time: 49 or more hours worked","%","Males: Total","%","Males: Part-time: 15 hours or less worked","%","Males: Part-time: 16 to 30 hours worked","%","Males: Full-time: 31 to 48 hours worked","%","Males: Full-time: 49 or more hours worked","%","Females: Total","%","Females: Part-time: 15 hours or less worked","%","Females: Part-time: 16 to 30 hours worked","%","Females: Full-time: 31 to 48 hours worked","%","Females: Full-time: 49 or more hours worked","%"
 
 "Darlington",49014,100.0,4093,8.4,10240,20.9,29280,59.7,5401,11.0,25264,51.5,1259,2.6,2344,4.8,17463,35.6,4198,8.6,23750,48.5,2834,5.8,7896,16.1,11817,24.1,1203,2.5
@@ -356,12 +348,3 @@
 "Torfaen",40261,100.0,3264,8.1,8280,20.6,24940,61.9,3777,9.4,20858,51.8,993,2.5,1853,4.6,15001,37.3,3011,7.5,19403,48.2,2271,5.6,6427,16.0,9939,24.7,766,1.9
 "Monmouthshire",42817,100.0,4240,9.9,8459,19.8,23344,54.5,6774,15.8,22640,52.9,1291,3.0,2014,4.7,14096,32.9,5239,12.2,20177,47.1,2949,6.9,6445,15.1,9248,21.6,1535,3.6
 "Newport",64408,100.0,5681,8.8,14150,22.0,37808,58.7,6769,10.5,33633,52.2,1870,2.9,3647,5.7,22755,35.3,5361,8.3,30775,47.8,3811,5.9,10503,16.3,15053,23.4,1408,2.2
-
-
-
-
-"","In order to protect against disclosure of personal information, records"
-"","have been swapped between different geographic areas. Some counts will"
-"","be affected, particularly small counts at the lowest geographies"
-"","be affected, particularly small counts at the lowest geographies"
-

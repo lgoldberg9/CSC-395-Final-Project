@@ -1,11 +1,3 @@
-
-"KS402EW - Tenure"
-"ONS Crown Copyright Reserved [from Nomis on 14 April 2017]"
-"Population :","All households"
-"Units      :","Households"
-"Date       :","2011"
-"Rural Urban:","Total"
-
 "local authority: district / unitary (prior to April 2015)","All households","%","Owned","%","Owned: Owned outright","%","Owned: Owned with a mortgage or loan","%","Shared ownership (part owned and part rented)","%","Social rented","%","Social rented: Rented from council (Local Authority)","%","Social rented: Other","%","Private rented","%","Private rented: Private landlord or letting agency","%","Private rented: Other","%","Living rent free","%"
 
 "Darlington",46670,100.0,30289,64.9,13810,29.6,16479,35.3,178,0.4,7228,15.5,5238,11.2,1990,4.3,8513,18.2,7758,16.6,755,1.6,462,1.0
@@ -356,12 +348,3 @@
 "Torfaen",38524,100.0,25518,66.2,12176,31.6,13342,34.6,199,0.5,9100,23.6,3840,10.0,5260,13.7,3315,8.6,2894,7.5,421,1.1,392,1.0
 "Monmouthshire",38233,100.0,28142,73.6,15269,39.9,12873,33.7,141,0.4,5288,13.8,1590,4.2,3698,9.7,4130,10.8,3651,9.5,479,1.3,532,1.4
 "Newport",61172,100.0,39272,64.2,18229,29.8,21043,34.4,325,0.5,12122,19.8,5981,9.8,6141,10.0,8572,14.0,7870,12.9,702,1.1,881,1.4
-
-
-
-
-"","In order to protect against disclosure of personal information, records"
-"","have been swapped between different geographic areas. Some counts will"
-"","be affected, particularly small counts at the lowest geographies"
-"","be affected, particularly small counts at the lowest geographies"
-
