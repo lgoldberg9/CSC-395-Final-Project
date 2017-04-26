@@ -1,11 +1,11 @@
 // Define dimensions for visualization
-var width  = 1000;
+var width  = 600;
 var height = 800;
 
 // Set up a projection for England which is centered and
 // scaled appropriately
 var projection = d3.geoAlbers()
-    .center([-2, 55.4])
+    .center([2, 55.4])
     .rotate([4.6, 0])
     .parallels([50, 60])
     .scale(1200 * 5)
@@ -14,10 +14,13 @@ var projection = d3.geoAlbers()
 var path = d3.geoPath().projection(projection);
 
 // Add an SVG element
-var svg = d3.select("#map").append("svg")
+var svgLeft = d3.select("#mapLeft").append("svg")
     .attr("width", width)
     .attr("height", height);
 
+var svgRight = d3.select("#mapRight").append('svg')
+    .attr('width', width)
+    .attr('height', height);
 
 // Queue a sequence of requests for drawing the map
 d3.queue()
@@ -30,14 +33,26 @@ d3.queue()
         // Once all requests (currently only one) are complete, this function runs
 
         // Draw land
-        svg.append('path')
+        svgLeft.append('path')
             .datum(topojson.feature(uk, uk.objects.lad))
             .attr("class", "land")
             .attr("d", path);
 
-        svg.append("path")
+        svgLeft.append("path")
+            .datum(topojson.mesh(uk, uk.objects.lad,
+                                 function(a, b) { return a !== b; }))
+            .attr("class", "lad-boundary")
+            .attr("d", path);
+
+        svgRight.append('path')
+            .datum(topojson.feature(uk, uk.objects.lad))
+            .attr("class", "land")
+            .attr("d", path);
+
+        svgRight.append("path")
             .datum(topojson.mesh(uk, uk.objects.lad,
                                  function(a, b) { return a !== b; }))
             .attr("class", "lad-boundary")
             .attr("d", path);      
+
     });

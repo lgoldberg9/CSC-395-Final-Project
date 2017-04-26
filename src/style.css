@@ -19,6 +19,12 @@ h3 { font-size: 1.5em; }
   }
 }
 
+.container {
+    position: relative;
+    float: left;
+    left: 204px
+}
+
 /* Margin on sidebar headings */
 .sidebar h4 {
   margin-top: 1em;
