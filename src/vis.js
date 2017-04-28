@@ -30,16 +30,24 @@ var votes = d3.map();
 var colorScaleVotes = d3.scalePow().exponent(.75)
     .range(['#ef8a62', '#fff', '#67a9cf']);
 
+d3.select('#subcategory')
+    .on('change', function() {
+        console.log(d3.select(this).node().value);
+        //        updateView()
+    });
+
 // Queue a sequence of requests for drawing the map
 d3.queue()
     .defer(d3.json, '../data/uk.json')
     .defer(d3.csv, '../data/EU-referendum-result-data.csv', function(d) {
         var remainPct = parseInt(d.Pct_Remain);
 
-
         if (remainPct != 0) {
             votes.set(d.Area_Code, (remainPct - 50)/100);
         }
+    })
+    .defer(d3.csv, '../data/country_of_birth.csv', function(d) {
+        
     })
     .await(function(error, uk) {
         if (error) {
