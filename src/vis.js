@@ -1,6 +1,7 @@
 // Define dimensions for visualization
 var width  = 600;
 var height = 800;
+var centered;
 
 // Set up a projection for England which is centered and
 // scaled appropriately
@@ -72,7 +73,7 @@ d3.queue()
                 .attr('stroke', '#000')
                 .attr('stroke-width', '0.5px')
                 .attr('fill', colorScaleVotes(legendVoteScale(i)));
-
+	    
             svgRight.append('text')
                 .attr('x', width * .25 + 30 * i - 5)
                 .attr('y', height * .75 + 90)
@@ -81,11 +82,15 @@ d3.queue()
                 .text(d3.format('+.1%')(legendVoteScale(i)));
         }
 
-        // Draw land
-        svgLeft.append('path')
-            .datum(topojson.feature(uk, uk.objects.lad))
-            .attr("class", "land")
-            .attr("d", path);
+        // Draw land (reformatted to generate lad by lad)
+        svgLeft.append('g')
+	    .attr('id', 'lad')
+	    .selectAll('path')
+	    .data(topojson.feature(uk, uk.objects.lad).features)
+	    .enter()
+	    .append('path')
+	    .attr('d', path)
+	    .on('click', lad_clicked);
 
         svgLeft.append("path")
             .datum(topojson.mesh(uk, uk.objects.lad,
@@ -115,3 +120,29 @@ d3.queue()
             .attr("d", path);      
 
     });
+
+function lad_clicked(d) { // Handles click and zoom
+    var x, y, k;
+    
+    if (d && centered !== d) {
+	var centroid = path.centroid(d);
+	x = centroid[0];
+	y = centroid[1];
+	k = 4;
+	centered = d;
+    } else {
+	x = width / 2;
+	y = height / 2;
+	k = 1;
+	centered = null;
+    }
+    
+    svgLeft.selectAll("path")
+	.classed("active", centered && function(d) { return d === centered; });
+    
+    svgLeft.transition()
+	.duration(750)
+	.attr("transform", "translate(" + width / 2 + "," + height / 2
+	      + ")scale(" + k + ")translate(" + -x + "," + -y + ")")
+	.style("stroke-width", 1.5 / k + "px");
+}

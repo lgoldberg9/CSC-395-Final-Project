@@ -39,8 +39,12 @@ h3 { font-size: 1.5em; }
     margin-top: 3em;
 }
 
-.land {
+#lad {
     fill: #000;
+}
+
+#lad .active {
+    fill: orange;
 }
 
 .lad-boundary {
@@ -48,3 +52,4 @@ h3 { font-size: 1.5em; }
     stroke: #aaa;
     stroke-width: 1px;
 }
+
