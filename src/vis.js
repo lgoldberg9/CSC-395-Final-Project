@@ -26,14 +26,25 @@ var svgRight = d3.select("#mapRight").append('svg')
 // Keep track of Political Data & Districts
 var votes = d3.map();
 
+var ukTopojson = undefined;
+
+// Keep track of demographic data
+var demographicData = d3.map();
+
 // Make a color scale for remain/stay votes
 var colorScaleVotes = d3.scalePow().exponent(.75)
     .range(['#ef8a62', '#fff', '#67a9cf']);
 
+d3.select('#demographic')
+    .on('change', function() {
+        updateDemographicView(d3.select(this).node().value);
+    });
+
 d3.select('#subcategory')
     .on('change', function() {
         console.log(d3.select(this).node().value);
-        //        updateView()
+        updateSubcategoryView(demographicData.get(d3.select('#demographic').node().value),
+                              d3.select(this).node().value);
     });
 
 // Queue a sequence of requests for drawing the map
@@ -46,15 +57,19 @@ d3.queue()
             votes.set(d.Area_Code, (remainPct - 50)/100);
         }
     })
-    .defer(d3.csv, '../data/country_of_birth.csv', function(d) {
-        
-    })
-    .await(function(error, uk) {
+    .defer(d3.csv, '../data/country_of_birth.csv')
+    .await(function(error, uk, brexit, cob) {
+        // Once all requests (currently only one) are complete, this function runs
         if (error) {
             console.error(error);
         }
         console.log(uk);
-        // Once all requests (currently only one) are complete, this function runs
+
+        ukTopojson = uk;
+        
+        /* Put the demographic data into a d3 map in which the key is the HTML
+         * option value */
+        demographicData.set('cob', cob);
         
         var minVoteRemain = d3.min(votes.values());
         var maxVoteRemain = d3.max(votes.values());
@@ -128,6 +143,77 @@ d3.queue()
             .attr("d", path);      
 
     });
+
+function updateDemographicView(d) {
+    // Grab data for selected demographic view
+    var datum = demographicData.get(d);
+    console.log(datum);
+    console.log(Object.keys(datum[0]));
+
+    // Add subcategory select options
+    d3.selectAll('#subcategory').selectAll('option')
+        .data(Object.keys(datum[0]))
+        .enter()
+        .append('option')
+        .attr('value', d => d)
+        .text(function (d) {
+            if (d != 'local authority: district / unitary (prior to April 2015)') {
+                return d;
+            }
+        });
+
+
+    d3.selectAll('.container').style('left', '' + d3.select('#control-bar')
+                                  .node()
+                                  .getBoundingClientRect().right + 'px');
+}
+
+function updateSubcategoryView(demo, d) {
+ /*   console.log(d);
+    var temp = demo[1];
+    var temp2 = temp[d];
+    console.log(temp);
+    console.log(temp2); */
+
+    var colorScale = d3.scalePow().exponent(0.75).range(['#e5f5f9',
+                                                         '#99d8c9',
+                                                         '#2ca25f']);
+    var tempMap = d3.map();
+    
+    var min = 1;
+    var max = 0;
+    for (var i of demo) {
+        var calc = +i[d] / i['total'];
+        tempMap.set(i.district, calc);
+        if (calc < min) {
+            min = calc;
+        }
+        if (calc > max) {
+            max = calc;
+        }
+    }
+
+    colorScale.domain([min, max]);
+
+    console.log(ukTopojson);
+
+    console.log("here!");
+    svgLeft.selectAll('g').remove();
+    svgLeft.append('g')
+        .attr('class', 'districts')
+        .selectAll('path')
+        .data(topojson.feature(ukTopojson, ukTopojson.objects.lad).features)
+        .enter()
+        .append('path')
+        .attr('fill', function(d) {
+            console.log(tempMap.get(d.properties.LAD13NM));
+            return colorScale(tempMap.get(d.properties.LAD13NM));
+        })
+        .attr('d', path)
+    	.on('click', lad_clicked);
+}
+
+              
 
 function lad_clicked(d) { // Handles click and zoom
     var x, y, k;
