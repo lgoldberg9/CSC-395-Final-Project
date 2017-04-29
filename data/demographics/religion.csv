@@ -1,11 +1,3 @@
-
-"KS209EW - Religion"
-"ONS Crown Copyright Reserved [from Nomis on 14 April 2017]"
-"Population :","All usual residents"
-"Units      :","Persons"
-"Date       :","2011"
-"Rural Urban:","Total"
-
 "local authority: district / unitary (prior to April 2015)","All categories: Religion","%","Has religion","%","Christian","%","Buddhist","%","Hindu","%","Jewish","%","Muslim","%","Sikh","%","Other religion","%","No religion","%","Religion not stated","%"
 
 "Darlington",105564,100.0,73433,69.6,71122,67.4,307,0.3,317,0.3,45,0.0,971,0.9,361,0.3,310,0.3,25415,24.1,6716,6.4
@@ -356,23 +348,3 @@
 "Torfaen",91075,100.0,51561,56.6,50472,55.4,222,0.2,241,0.3,16,0.0,238,0.3,56,0.1,316,0.3,32605,35.8,6909,7.6
 "Monmouthshire",91323,100.0,58274,63.8,57101,62.5,269,0.3,162,0.2,65,0.1,239,0.3,47,0.1,391,0.4,26018,28.5,7031,7.7
 "Newport",145736,100.0,91465,62.8,82858,56.9,360,0.2,685,0.5,99,0.1,6859,4.7,141,0.1,463,0.3,43336,29.7,10935,7.5
-
-
-
-
-"","In order to protect against disclosure of personal information, records"
-"","have been swapped between different geographic areas. Some counts will"
-"","be affected, particularly small counts at the lowest geographies"
-"","be affected, particularly small counts at the lowest geographies"
-
-
-"","Due to an error in the processing of census data, the number of usual"
-"residents","Due to an error in the processing of census data, the number of usual"
-"","in the 'Religion not stated' category has been overestimated by a total of"
-"62,000 for three","in the 'Religion not stated' category has been overestimated by a total of"
-"","local authorities: Camden, Islington and Tower Hamlets. More information"
-"from","local authorities: Camden, Islington and Tower Hamlets. More information"
-"","local authorities: Camden, Islington and Tower Hamlets. More information"
-"","http://www.ons.gov.uk/ons/guide-method/census/2011/census-data/census-products--issues-and-corrections/index.html"
-"","http://www.ons.gov.uk/ons/guide-method/census/2011/census-data/census-products--issues-and-corrections/index.html"
-

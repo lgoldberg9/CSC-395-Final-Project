@@ -1,11 +1,3 @@
-
-"KS101EW - Usual resident population"
-"ONS Crown Copyright Reserved [from Nomis on 14 April 2017]"
-"Population :","All usual residents"
-"Units      :","Persons"
-"Date       :","2011"
-"Rural Urban:","Total"
-
 "local authority: district / unitary (prior to April 2015)","All usual residents","%","Males","%","Females","%","Lives in a household","%","Lives in a communal establishment","%","Schoolchild or full-time student aged 4 and over at their non term-time address","%","Area (Hectares)","%","Density (number of persons per hectare)","%"
 
 "Darlington",105564,100.0,51483,48.8,54081,51.2,104111,98.6,1453,1.4,1218,-,19747.51,-,5.3,-
@@ -356,15 +348,3 @@
 "Torfaen",91075,100.0,44382,48.7,46693,51.3,90360,99.2,715,0.8,792,-,12564.08,-,7.2,-
 "Monmouthshire",91323,100.0,44922,49.2,46401,50.8,89694,98.2,1629,1.8,1682,-,84914.94,-,1.1,-
 "Newport",145736,100.0,71380,49.0,74356,51.0,144103,98.9,1633,1.1,1509,-,19051.60,-,7.6,-
-
-
-
-
-"-","These figures are missing."
-
-
-"","In order to protect against disclosure of personal information, records"
-"","have been swapped between different geographic areas. Some counts will"
-"","be affected, particularly small counts at the lowest geographies"
-"","be affected, particularly small counts at the lowest geographies"
-
