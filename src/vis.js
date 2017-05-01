@@ -23,19 +23,13 @@ var svgRight = d3.select("#mapRight").append('svg')
     .attr('width', width)
     .attr('height', height);
 
-// Keep track of Political Data & Districts
-var votes = d3.map();
-
 var ukTopojson = undefined;
 
 // Keep track of demographic data
 var demographicData = d3.map();
 
-// Make a color scale for remain/stay votes
-var colorScaleVotes = d3.scalePow().exponent(.75)
-    .range(['#ef8a62', '#fff', '#67a9cf']);
 
-var demographic_ids = [{ value: "all", name: "Temp" },
+var demographic_ids = [{ value: "all", name: "Please Select" },
                        { value: "cob", name: "Country of Birth" },
                        { value: "eth", name: "Ethnic Group" },
                        { value: "hpu", name: "Health and Provisions" },
@@ -44,10 +38,13 @@ var demographic_ids = [{ value: "all", name: "Temp" },
                        { value: "lva", name: "Living Arrangements" },
                        { value: "mla", name: "Main Language" },
                        { value: "nid", name: "National Identity" },
-                       { value: "qus", name: "Qualifications and Scholarship" },
+                       { value: "qus", name: "Qualifications and Students" },
                        { value: "rel", name: "Religion" },
                        { value: "ten", name: "Tenure" },
-                       { value: "pop", name: "Resident Population" }];
+                       { value: "pop", name: "Resident Population" },
+                       { value: "hhc", name: "Household Composition" }];
+
+var brexitData = undefined;
 
 // Create demographic options for left map
 d3.selectAll('#demographic').selectAll('option')
@@ -69,22 +66,29 @@ d3.select('#subcategory')
                               d3.select(this).node().value);
     });
 
+d3.select('#brexit')
+    .on('change', function() {
+        updateBrexitView(brexitData, d3.select(this).node().value);
+    });
+
 
 // Queue a sequence of requests for drawing the map
 var q = d3.queue();
     q.defer(d3.json, '../data/uk.json')
-    .defer(d3.csv, '../data/brexit/EU-referendum-result-data.csv', function(d) {
-        var remainPct = parseInt(d.Pct_Remain);
-
-        if (remainPct != 0) {
-            votes.set(d.Area_Code, (remainPct - 50)/100);
-        }
-    })
+    .defer(d3.csv, '../data/brexit/EU-referendum-result-data.csv')
     .defer(d3.csv, '../data/demographics/country_of_birth.csv')
     .defer(d3.csv, '../data/demographics/health_and_provision_of_unpaid_care.csv')
     .defer(d3.csv, '../data/demographics/ethnic_group.csv')
-    .defer(d3.csv, '../data/demographics/main_language.csv');
-
+    .defer(d3.csv, '../data/demographics/main_language.csv')
+    .defer(d3.csv, '../data/demographics/hours_worked.csv')
+    .defer(d3.csv, '../data/demographics/household_composition.csv')
+    .defer(d3.csv, '../data/demographics/industry_by_sex.csv')
+    .defer(d3.csv, '../data/demographics/living_arrangements.csv')
+    .defer(d3.csv, '../data/demographics/national_identity.csv')
+    .defer(d3.csv, '../data/demographics/qualifications_and_students.csv')
+    .defer(d3.csv, '../data/demographics/religion.csv')
+    .defer(d3.csv, '../data/demographics/tenure.csv')
+    .defer(d3.csv, '../data/demographics/usual_resident_population.csv')
 /* Load all demographic csv files
 d3.csv('../data/demographics/datafile_names.csv', function(d) {
     for (var datafile of d) {
@@ -93,7 +97,8 @@ d3.csv('../data/demographics/datafile_names.csv', function(d) {
     }
 });*/
 
-q.await(function(error, uk, brexit, cob, hpu, eth, mla) {
+q.await(function(error, uk, brexit, cob, hpu, eth, mla, huw, hhc,
+                 isx, lva, nid, qus, rel, ten, pop) {
     // Once all requests (currently only one) are complete, this function runs
     if (error) {
         console.error(error);
@@ -101,6 +106,8 @@ q.await(function(error, uk, brexit, cob, hpu, eth, mla) {
     console.log(uk);
 
     ukTopojson = uk;
+
+    brexitData = brexit;
     
     /* Put the demographic data into a d3 map in which the key is the HTML
      * option value */
@@ -111,22 +118,17 @@ q.await(function(error, uk, brexit, cob, hpu, eth, mla) {
     demographicData.set('hpu', hpu);
     demographicData.set('eth', eth);
     demographicData.set('mla', mla);
+    demographicData.set('huw', huw);
+    demographicData.set('hhc', hhc);
+    demographicData.set('isx', isx);
+    demographicData.set('lva', lva);
+    demographicData.set('nid', nid);
+    demographicData.set('qus', qus);
+    demographicData.set('rel', rel);
+    demographicData.set('ten', ten);
+    demographicData.set('pop', pop);
     
-    var minVoteRemain = d3.min(votes.values());
-    var maxVoteRemain = d3.max(votes.values());
-
-    // Compute the maximum and minimum for the legend for remain/stay votes
-    var legendMaxVotes = Math.max(Math.abs(minVoteRemain), maxVoteRemain);
-    var legendMinVotes = -legendMaxVotes;
-
-    // Set the domain of the color scale for the votes
-    colorScaleVotes.domain([legendMinVotes, 0, legendMaxVotes]);
-
-    // Create a scale for the legend of remain/stay votes
-    var legendVoteScale = d3.scaleLinear()
-        .domain([0,8])
-        .range([legendMinVotes, legendMaxVotes]);
-
+/*
     // Create legend for voting scale
     for(var i = 0; i <= 8; i++) {
         svgRight.append('rect')
@@ -145,7 +147,8 @@ q.await(function(error, uk, brexit, cob, hpu, eth, mla) {
             .attr('font-size', '8pt')
             .text(d3.format('+.1%')(legendVoteScale(i)));
     }
-
+*/
+    
     // Draw land (reformatted to generate lad by lad)
     svgLeft.append('g')
 	.attr('id', 'lad')
@@ -166,16 +169,6 @@ q.await(function(error, uk, brexit, cob, hpu, eth, mla) {
         .datum(topojson.feature(uk, uk.objects.lad))
         .attr("class", "land")
         .attr("d", path);
-
-    // Add coloring for districts voting turnout
-    svgRight.append('g')
-        .attr('class', 'districts')
-        .selectAll('path')
-        .data(topojson.feature(uk, uk.objects.lad).features)
-        .enter()
-        .append('path')
-        .attr('fill', d => colorScaleVotes(votes.get(d.id)))
-        .attr('d', path);
 
     svgRight.append("path")
         .datum(topojson.mesh(uk, uk.objects.lad,
@@ -199,7 +192,7 @@ function updateDemographicView(d) {
         .append('option')
         .attr('value', d => d)
         .text(function (d) {
-            if (d != 'local authority: district / unitary (prior to April 2015)') {
+            if (d != 'district' && d != 'total' && d != '%') {
                 return d; // Needs a good heuristic for cutting char length
             }
         });
@@ -212,9 +205,9 @@ function updateDemographicView(d) {
 
 function updateSubcategoryView(demo, d) {
 
-    var colorScale = d3.scalePow().exponent(0.75).range(['#e5f5f9',
-                                                         '#99d8c9',
-                                                         '#2ca25f']);
+    var colorScale = d3.scaleLinear().range(['#e5f5f9',
+                                             //'#99d8c9',
+                                             '#2ca25f']);
     var tempMap = d3.map();
     
     var min = 1;
@@ -244,8 +237,68 @@ function updateSubcategoryView(demo, d) {
         })
         .attr('d', path)
     	.on('click', lad_clicked);
+
+    svgLeft.append("path")
+        .datum(topojson.mesh(ukTopojson, ukTopojson.objects.lad,
+                             function(a, b) { return a !== b; }))
+        .attr("class", "lad-boundary")
+        .attr("d", path);
 }
 
+function updateBrexitView(demo, d) {
+
+    // Make a color scale for remain/stay votes
+    var colorScaleVotes = d3.scalePow().exponent(.75)
+        .range(['#ef8a62', '#fff', '#67a9cf']);
+
+    var pct = undefined;
+    var votes = d3.map();
+
+    for (var row of demo) {
+        if (d == 'Leave') {
+            pct = parseInt(row.Pct_Leave);
+        } else if (d == 'Remain') {
+            pct = parseInt(row.Pct_Remain);
+        }
+        if (pct != 0) {
+            console.log(pct);
+            console.log(row.Area_Code);
+            votes.set(row.Area_Code, (pct - 50)/100);
+        }
+    }
+    
+    var minVote = d3.min(votes.values());
+    var maxVote = d3.max(votes.values());
+
+    // Compute the maximum and minimum for the legend for remain/stay votes
+    var legendMaxVotes = Math.max(Math.abs(minVote), maxVote);
+    var legendMinVotes = -legendMaxVotes;
+
+    // Set the domain of the color scale for the votes
+    colorScaleVotes.domain([legendMinVotes, 0, legendMaxVotes]);
+
+    // Create a scale for the legend of remain/stay votes
+    var legendVoteScale = d3.scaleLinear()
+        .domain([0,8])
+        .range([legendMinVotes, legendMaxVotes]);
+
+    // Add coloring for districts voting turnout
+    svgRight.append('g')
+        .attr('class', 'districts')
+        .selectAll('path')
+        .data(topojson.feature(ukTopojson, ukTopojson.objects.lad).features)
+        .enter()
+        .append('path')
+        .attr('fill', d => colorScaleVotes(votes.get(d.id)))
+        .attr('d', path);
+
+    svgRight.append("path")
+        .datum(topojson.mesh(ukTopojson, ukTopojson.objects.lad,
+                             function(a, b) { return a !== b; }))
+        .attr("class", "lad-boundary")
+        .attr("d", path);      
+}
+    
               
 
 function lad_clicked(d) { // Handles click and zoom
