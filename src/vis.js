@@ -23,12 +23,29 @@ var svgRight = d3.select("#mapRight").append('svg')
     .attr('width', width)
     .attr('height', height);
 
+
+// Adding legend to svgLeft
+var legendFullHeight = width;
+var legendFullWidth = 50;
+var legendMargin = { top: 5, bottom: 20, left: 20, right: 20 };
+
+// Use margins of plot
+var legendWidth = legendFullWidth - legendMargin.left - legendMargin.right;
+var legendHeight = legendFullHeight - legendMargin.top - legendMargin.bottom;
+
+var legendSvg = d3.select('#mapLeft').append('svg')
+    .attr('width', legendFullWidth)
+    .attr('height', legendFullHeight)
+    .append('g')
+    .attr('transform', 'translate(' + legendMargin.left + ',' +
+          legendMargin.top + ')');
+
 var ukTopojson = undefined;
 
 // Keep track of demographic data
 var demographicData = d3.map();
 
-
+// Use this table as frequently as possible when performing operations over all datasets.
 var demographic_ids = [{ value: "all", name: "Please Select" },
                        { value: "cob", name: "Country of Birth" },
                        { value: "eth", name: "Ethnic Group" },
@@ -64,6 +81,8 @@ d3.select('#subcategory')
         console.log(d3.select(this).node().value);
         updateSubcategoryView(demographicData.get(d3.select('#demographic').node().value),
                               d3.select(this).node().value);
+	// Add something involving color scale updating for legend.
+	updateLegendScale(/* add some params */);
     });
 
 d3.select('#brexit')
@@ -77,18 +96,18 @@ var q = d3.queue();
     q.defer(d3.json, '../data/uk.json')
     .defer(d3.csv, '../data/brexit/EU-referendum-result-data.csv')
     .defer(d3.csv, '../data/demographics/country_of_birth.csv')
-    .defer(d3.csv, '../data/demographics/health_and_provision_of_unpaid_care.csv')
     .defer(d3.csv, '../data/demographics/ethnic_group.csv')
-    .defer(d3.csv, '../data/demographics/main_language.csv')
+    .defer(d3.csv, '../data/demographics/health_and_provision_of_unpaid_care.csv')
     .defer(d3.csv, '../data/demographics/hours_worked.csv')
-    .defer(d3.csv, '../data/demographics/household_composition.csv')
     .defer(d3.csv, '../data/demographics/industry_by_sex.csv')
     .defer(d3.csv, '../data/demographics/living_arrangements.csv')
+    .defer(d3.csv, '../data/demographics/main_language.csv')
     .defer(d3.csv, '../data/demographics/national_identity.csv')
     .defer(d3.csv, '../data/demographics/qualifications_and_students.csv')
     .defer(d3.csv, '../data/demographics/religion.csv')
     .defer(d3.csv, '../data/demographics/tenure.csv')
     .defer(d3.csv, '../data/demographics/usual_resident_population.csv')
+    .defer(d3.csv, '../data/demographics/household_composition.csv')
 /* Load all demographic csv files
 d3.csv('../data/demographics/datafile_names.csv', function(d) {
     for (var datafile of d) {
@@ -97,36 +116,23 @@ d3.csv('../data/demographics/datafile_names.csv', function(d) {
     }
 });*/
 
-q.await(function(error, uk, brexit, cob, hpu, eth, mla, huw, hhc,
-                 isx, lva, nid, qus, rel, ten, pop) {
+q.await(function(error, uk, brexit) {
     // Once all requests (currently only one) are complete, this function runs
     if (error) {
         console.error(error);
     }
     console.log(uk);
-
     ukTopojson = uk;
-
     brexitData = brexit;
+    
+    // If processes are deferred earlier in queue than csv's, change demographic_starting_id accordingly
+    var demographic_starting_id = 3;
     
     /* Put the demographic data into a d3 map in which the key is the HTML
      * option value */
-    /*for (var i = 3; i < arguments.length; i++) {// Start after brexit argument
-        demographicData.set(demographic_ids.value, arguments[i]);
-    }*/
-    demographicData.set('cob', cob);
-    demographicData.set('hpu', hpu);
-    demographicData.set('eth', eth);
-    demographicData.set('mla', mla);
-    demographicData.set('huw', huw);
-    demographicData.set('hhc', hhc);
-    demographicData.set('isx', isx);
-    demographicData.set('lva', lva);
-    demographicData.set('nid', nid);
-    demographicData.set('qus', qus);
-    demographicData.set('rel', rel);
-    demographicData.set('ten', ten);
-    demographicData.set('pop', pop);
+    for (var i = demographic_starting_id; i < arguments.length; i++) {// Start after brexit argument 
+        demographicData.set(demographic_ids[i - 2].value, arguments[i]);
+    }
     
 /*
     // Create legend for voting scale
@@ -149,7 +155,7 @@ q.await(function(error, uk, brexit, cob, hpu, eth, mla, huw, hhc,
     }
 */
     
-    // Draw land (reformatted to generate lad by lad)
+    // Draw land (reformatted to generate lads by lad)
     svgLeft.append('g')
 	.attr('id', 'lad')
 	.selectAll('path')
@@ -174,7 +180,8 @@ q.await(function(error, uk, brexit, cob, hpu, eth, mla, huw, hhc,
         .datum(topojson.mesh(uk, uk.objects.lad,
                              function(a, b) { return a !== b; }))
         .attr("class", "lad-boundary")
-        .attr("d", path);      
+        .attr("d", path);
+    
 
 });
 
@@ -205,9 +212,9 @@ function updateDemographicView(d) {
 
 function updateSubcategoryView(demo, d) {
 
-    var colorScale = d3.scaleLinear().range(['#e5f5f9',
-                                             //'#99d8c9',
-                                             '#2ca25f']);
+    var colorScale = d3.scaleLinear().range(['#edf8b1',
+                                             '#7fcdbb',
+                                             '#2c7fb8']);
     var tempMap = d3.map();
     
     var min = 1;
@@ -298,8 +305,87 @@ function updateBrexitView(demo, d) {
         .attr("class", "lad-boundary")
         .attr("d", path);      
 }
+
+function updateLegendScale(/* dataset?, scale? */) {
+    // Feed this function
+    // create color scale
+    var temp_bounds = 3;
+    var scale = 100; // Likely percentages
     
-              
+    var colorScale = d3.scaleLinear()
+	.domain(linspace(-temp_bounds, temp_bounds, 100))
+	.range(0, 100)
+
+    // Remove previous entries
+    legendSvg.selectAll('*').remove();
+
+    // Add gradient
+    var gradient = legendSvg.append('defs')
+	.append('linearGradient')
+	.attr('id', 'gradient')
+        .attr('x1', '0%') // left
+        .attr('y1', '100%')
+        .attr('x2', '0%') // to right
+        .attr('y2', '0%')
+        .attr('spreadMethod', 'pad');
+
+    // programatically generate the gradient for the legend
+    // this creates an array of [pct, colour] pairs as stop
+    // values for legend
+    var pct = linspace(0, 100, scale.length).map(function(d) {
+        return Math.round(d) + '%';
+    });
+
+    var colourPct = d3.zip(pct, scale);
+
+    colourPct.forEach(function(d) {
+        gradient.append('stop')
+            .attr('offset', d[0])
+            .attr('stop-color', d[1])
+            .attr('stop-opacity', 1);
+    });
+    
+    legendSvg.append('rect')
+        .attr('x1', 0)
+        .attr('y1', 0)
+        .attr('width', legendWidth)
+        .attr('height', legendHeight)
+        .style('fill', 'url(#gradient)');
+    
+    // create a scale and axis for the legend
+    var legendScale = d3.scaleLinear()
+        .domain([-temp_bounds, temp_bounds])
+        .range([legendHeight, 0]);
+    
+    var legendAxis = d3.axisRight(legendScale)
+        .tickValues(d3.range(-3, 4))
+        .tickFormat(d3.format("d"));
+    
+    legendSvg.append("g")
+        .attr("class", "legend axis")
+        .attr("transform", "translate(" + legendWidth + ", 0)")
+        .call(legendAxis);
+    
+}
+
+function linspace(start, end, n) {
+
+    var out = [];
+
+    if (n < 2) {
+	return out;
+    }
+    
+    var delta = (end - start) / (n - 1);
+    var i = 0;
+    while (i < (n - 1)) {
+	out.push(start + (i * delta));
+	i++;
+    }
+
+    out.push(end)
+    return out;
+}
 
 function lad_clicked(d) { // Handles click and zoom
     var x, y, k;
