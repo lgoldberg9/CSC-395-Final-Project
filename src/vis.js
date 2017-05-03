@@ -28,9 +28,6 @@ var ukTopojson = undefined;
 // Keep track of demographic data
 var demographicData = d3.map();
 
-// Temporary
-updateLegendScale(/* add some params */);
-
 // Use this table as frequently as possible when performing operations over all datasets.
 var demographic_ids = [{ value: "all", name: "Please Select" },
                        { value: "cob", name: "Country of Birth" },
@@ -65,7 +62,6 @@ d3.select('#demographic')
 
 d3.select('#subcategory')
     .on('change', function() {
-        console.log(d3.select(this).node().value);
         updateSubcategoryView(demographicData.get(d3.select('#demographic').node().value),
                               d3.select(this).node().value);
 	// Add something involving color scale updating for legend.
@@ -79,7 +75,7 @@ d3.select('#brexit')
 
 // Queue a sequence of requests for drawing the map
 var q = d3.queue();
-    q.defer(d3.json, '../data/uk.json')
+q.defer(d3.json, '../data/uk.json')
     .defer(d3.csv, '../data/brexit/EU-referendum-result-data.csv')
     .defer(d3.csv, '../data/demographics/country_of_birth.csv')
     .defer(d3.csv, '../data/demographics/ethnic_group.csv')
@@ -95,12 +91,12 @@ var q = d3.queue();
     .defer(d3.csv, '../data/demographics/usual_resident_population.csv')
     .defer(d3.csv, '../data/demographics/household_composition.csv')
 /* Load all demographic csv files
-d3.csv('../data/demographics/datafile_names.csv', function(d) {
-    for (var datafile of d) {
-        console.log(datafile.name)
-        q.defer(d3.csv, datafile.name);
-    }
-});*/
+   d3.csv('../data/demographics/datafile_names.csv', function(d) {
+   for (var datafile of d) {
+   console.log(datafile.name)
+   q.defer(d3.csv, datafile.name);
+   }
+   });*/
 
 q.await(function(error, uk, brexit) {
     // Once all requests (currently only one) are complete, this function runs
@@ -120,26 +116,26 @@ q.await(function(error, uk, brexit) {
         demographicData.set(demographic_ids[i - 2].value, arguments[i]);
     }
     
-/*
+    /*
     // Create legend for voting scale
     for(var i = 0; i <= 8; i++) {
-        svgRight.append('rect')
-            .attr('x', width * .25 + 30 * i)
-            .attr('y', height * .75 + 50)
-            .attr('width', 25)
-            .attr('height', 25)
-            .attr('stroke', '#000')
-            .attr('stroke-width', '0.5px')
-            .attr('fill', colorScaleVotes(legendVoteScale(i)));
-	
-        svgRight.append('text')
-            .attr('x', width * .25 + 30 * i - 5)
-            .attr('y', height * .75 + 90)
-            .attr('font-family', 'sans-serif')
-            .attr('font-size', '8pt')
-            .text(d3.format('+.1%')(legendVoteScale(i)));
+    svgRight.append('rect')
+    .attr('x', width * .25 + 30 * i)
+    .attr('y', height * .75 + 50)
+    .attr('width', 25)
+    .attr('height', 25)
+    .attr('stroke', '#000')
+    .attr('stroke-width', '0.5px')
+    .attr('fill', colorScaleVotes(legendVoteScale(i)));
+    
+    svgRight.append('text')
+    .attr('x', width * .25 + 30 * i - 5)
+    .attr('y', height * .75 + 90)
+    .attr('font-family', 'sans-serif')
+    .attr('font-size', '8pt')
+    .text(d3.format('+.1%')(legendVoteScale(i)));
     }
-*/
+    */
     
     // Draw land (reformatted to generate lads by lad)
     svgLeft.append('g')
@@ -197,10 +193,10 @@ function updateDemographicView(d) {
 }
 
 function updateSubcategoryView(demo, d) {
-
-    var colorScale = d3.scaleLinear().range(['#edf8b1',
+   /* var colorScale = d3.scaleLinear().range(['#edf8b1',
                                              '#7fcdbb',
-                                             '#2c7fb8']);
+                                             '#2c7fb8']); */
+    var colorScale = d3.scaleLinear().range(['#7f3b08', '#f7f7f7', '#2d004b']);
     var tempMap = d3.map();
     
     var min = 1;
@@ -218,6 +214,7 @@ function updateSubcategoryView(demo, d) {
 
     colorScale.domain([min, max]);
     svgLeft.selectAll('g').remove();
+    svgLeft.selectAll('path.lad-boundary').remove();
     svgLeft.append('g')
         .attr('class', 'districts')
         .selectAll('path')
@@ -225,7 +222,6 @@ function updateSubcategoryView(demo, d) {
         .enter()
         .append('path')
         .attr('fill', function(d) {
-            console.log(tempMap.get(d.properties.LAD13NM));
             return colorScale(tempMap.get(d.properties.LAD13NM));
         })
         .attr('d', path)
@@ -236,6 +232,10 @@ function updateSubcategoryView(demo, d) {
                              function(a, b) { return a !== b; }))
         .attr("class", "lad-boundary")
         .attr("d", path);
+
+    console.log(min);
+    console.log(max);
+    updateLegendScale(min, max);
 }
 
 function updateBrexitView(demo, d) {
@@ -254,8 +254,6 @@ function updateBrexitView(demo, d) {
             pct = parseInt(row.Pct_Remain);
         }
         if (pct != 0) {
-            console.log(pct);
-            console.log(row.Area_Code);
             votes.set(row.Area_Code, (pct - 50)/100);
         }
     }
@@ -289,24 +287,51 @@ function updateBrexitView(demo, d) {
         .datum(topojson.mesh(ukTopojson, ukTopojson.objects.lad,
                              function(a, b) { return a !== b; }))
         .attr("class", "lad-boundary")
-        .attr("d", path);      
+        .attr("d", path);
+
 }
 
-function updateLegendScale(/* dataset?, scale? */) {
+function updateLegendScale(min, max) {
+
+    svgLeft.selectAll('defs').remove();
+    svgLeft.selectAll('rect').remove();
+    svgLeft.selectAll('text').remove();
+    svgLeft.selectAll('g.legendWrapper').remove();
     
-    var colorScale = d3.scaleLinear().range(['#edf8b1',
-                                             '#7fcdbb',
-                                             '#2c7fb8']);
+    var colorScale = d3.scaleLinear()
+        .range(['#7f3b08', '#f7f7f7', '#2d004b'])
+        .domain(linspace(min, max, 3));
+
+    console.log("Test");
 
     // Make gradient
     var gradient = svgLeft.append('defs')
 	.append('linearGradient')
 	.attr('id', 'gradient')
-	.data(colorScale.range())
+        .attr('x1', '0%') // left
+        .attr('y1', '0%')
+        .attr('x2', '100%') // right
+        .attr('y2', '0%')
+        .attr('spreadMethod', 'pad');
+    /*	.data(colorScale.range())
 	.enter()
 	.append('stop')
 	.attr("offset", function(d,i) { return i/(2); })   
-	.attr("stop-color", function(d) { return d; });
+	.attr("stop-color", function(d) { return d; }); */
+
+    var pct = linspace(0, 100, 3).map(function(d) {
+        return Math.round(d) + '%';
+    });
+
+    var colorPct = d3.zip(pct, ['#7f3b08', '#f7f7f7', '#2d004b']);
+
+    colorPct.forEach(function(d) {
+        gradient.append('stop')
+            .attr('offset', d[0])
+            .attr('stop-color', d[1])
+            .attr('stop-opacity', 1)
+    });
+
 
     var legendWidth = width * 0.6,
 	legendHeight = 10;
@@ -314,7 +339,7 @@ function updateLegendScale(/* dataset?, scale? */) {
     //Color Legend container
     var legendsvg = svgLeft.append("g")
 	.attr("class", "legendWrapper")
-	.attr("transform", "translate(" + (width/2 - 10) + "," + (height+50) + ")");
+	.attr("transform", "translate(" + (width/2 - 10) + "," + (height * .75) + ")");
     
     //Draw the Rectangle
     legendsvg.append("rect")
@@ -323,7 +348,7 @@ function updateLegendScale(/* dataset?, scale? */) {
 	.attr("y", 10)
     	.attr("width", legendWidth)
 	.attr("height", legendHeight)
-	.style("fill", "#444444");
+	.style("fill", 'url(#gradient)');
     
     //Append title
     legendsvg.append("text")
@@ -335,7 +360,7 @@ function updateLegendScale(/* dataset?, scale? */) {
     //Set scale for x-axis
     var xScale = d3.scaleLinear()
 	.range([0, legendWidth])
-	.domain([0,100]);
+	.domain([min, max]);
     
     //Define x-axis
     var xAxis = d3.axisBottom(xScale)
@@ -346,8 +371,20 @@ function updateLegendScale(/* dataset?, scale? */) {
 	.attr("class", "axis")  //Assign "axis" class
 	.attr("transform", "translate(" + (-legendWidth/2) + "," + (10 + legendHeight) + ")")
 	.call(xAxis);
+}
 
-    
+function linspace(start, end, n) {
+    var out = [];
+    var delta = (end - start) / (n - 1);
+
+    var i = 0;
+    while(i < (n - 1)) {
+        out.push(start + (i * delta));
+        i++;
+    }
+
+    out.push(end);
+    return out;
 }
 
 
