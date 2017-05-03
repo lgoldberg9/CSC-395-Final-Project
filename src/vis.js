@@ -23,27 +23,13 @@ var svgRight = d3.select("#mapRight").append('svg')
     .attr('width', width)
     .attr('height', height);
 
-
-// Adding legend to svgLeft
-var legendFullHeight = width;
-var legendFullWidth = 50;
-var legendMargin = { top: 5, bottom: 20, left: 20, right: 20 };
-
-// Use margins of plot
-var legendWidth = legendFullWidth - legendMargin.left - legendMargin.right;
-var legendHeight = legendFullHeight - legendMargin.top - legendMargin.bottom;
-
-var legendSvg = d3.select('#mapLeft').append('svg')
-    .attr('width', legendFullWidth)
-    .attr('height', legendFullHeight)
-    .append('g')
-    .attr('transform', 'translate(' + legendMargin.left + ',' +
-          legendMargin.top + ')');
-
 var ukTopojson = undefined;
 
 // Keep track of demographic data
 var demographicData = d3.map();
+
+// Temporary
+updateLegendScale(/* add some params */);
 
 // Use this table as frequently as possible when performing operations over all datasets.
 var demographic_ids = [{ value: "all", name: "Please Select" },
@@ -62,6 +48,7 @@ var demographic_ids = [{ value: "all", name: "Please Select" },
                        { value: "hhc", name: "Household Composition" }];
 
 var brexitData = undefined;
+
 
 // Create demographic options for left map
 d3.selectAll('#demographic').selectAll('option')
@@ -82,7 +69,6 @@ d3.select('#subcategory')
         updateSubcategoryView(demographicData.get(d3.select('#demographic').node().value),
                               d3.select(this).node().value);
 	// Add something involving color scale updating for legend.
-	updateLegendScale(/* add some params */);
     });
 
 d3.select('#brexit')
@@ -307,85 +293,63 @@ function updateBrexitView(demo, d) {
 }
 
 function updateLegendScale(/* dataset?, scale? */) {
-    // Feed this function
-    // create color scale
-    var temp_bounds = 3;
-    var scale = 100; // Likely percentages
     
-    var colorScale = d3.scaleLinear()
-	.domain(linspace(-temp_bounds, temp_bounds, 100))
-	.range(0, 100)
+    var colorScale = d3.scaleLinear().range(['#edf8b1',
+                                             '#7fcdbb',
+                                             '#2c7fb8']);
 
-    // Remove previous entries
-    legendSvg.selectAll('*').remove();
-
-    // Add gradient
-    var gradient = legendSvg.append('defs')
+    // Make gradient
+    var gradient = svgLeft.append('defs')
 	.append('linearGradient')
 	.attr('id', 'gradient')
-        .attr('x1', '0%') // left
-        .attr('y1', '100%')
-        .attr('x2', '0%') // to right
-        .attr('y2', '0%')
-        .attr('spreadMethod', 'pad');
+	.data(colorScale.range())
+	.enter()
+	.append('stop')
+	.attr("offset", function(d,i) { return i/(2); })   
+	.attr("stop-color", function(d) { return d; });
 
-    // programatically generate the gradient for the legend
-    // this creates an array of [pct, colour] pairs as stop
-    // values for legend
-    var pct = linspace(0, 100, scale.length).map(function(d) {
-        return Math.round(d) + '%';
-    });
+    var legendWidth = width * 0.6,
+	legendHeight = 10;
+    
+    //Color Legend container
+    var legendsvg = svgLeft.append("g")
+	.attr("class", "legendWrapper")
+	.attr("transform", "translate(" + (width/2 - 10) + "," + (height+50) + ")");
+    
+    //Draw the Rectangle
+    legendsvg.append("rect")
+	.attr("class", "legendRect")
+	.attr("x", -legendWidth/2)
+	.attr("y", 10)
+    	.attr("width", legendWidth)
+	.attr("height", legendHeight)
+	.style("fill", "#444444");
+    
+    //Append title
+    legendsvg.append("text")
+	.attr("class", "legendTitle")
+	.attr("x", 0)
+	.attr("y", -2)
+	.text("Store Competition Index");
+    
+    //Set scale for x-axis
+    var xScale = d3.scaleLinear()
+	.range([0, legendWidth])
+	.domain([0,100]);
+    
+    //Define x-axis
+    var xAxis = d3.axisBottom(xScale)
+	.ticks(5)  //Set rough # of ticks
+    
+    //Set up X axis
+    legendsvg.append("g")
+	.attr("class", "axis")  //Assign "axis" class
+	.attr("transform", "translate(" + (-legendWidth/2) + "," + (10 + legendHeight) + ")")
+	.call(xAxis);
 
-    var colourPct = d3.zip(pct, scale);
-
-    colourPct.forEach(function(d) {
-        gradient.append('stop')
-            .attr('offset', d[0])
-            .attr('stop-color', d[1])
-            .attr('stop-opacity', 1);
-    });
-    
-    legendSvg.append('rect')
-        .attr('x1', 0)
-        .attr('y1', 0)
-        .attr('width', legendWidth)
-        .attr('height', legendHeight)
-        .style('fill', 'url(#gradient)');
-    
-    // create a scale and axis for the legend
-    var legendScale = d3.scaleLinear()
-        .domain([-temp_bounds, temp_bounds])
-        .range([legendHeight, 0]);
-    
-    var legendAxis = d3.axisRight(legendScale)
-        .tickValues(d3.range(-3, 4))
-        .tickFormat(d3.format("d"));
-    
-    legendSvg.append("g")
-        .attr("class", "legend axis")
-        .attr("transform", "translate(" + legendWidth + ", 0)")
-        .call(legendAxis);
     
 }
 
-function linspace(start, end, n) {
-
-    var out = [];
-
-    if (n < 2) {
-	return out;
-    }
-    
-    var delta = (end - start) / (n - 1);
-    var i = 0;
-    while (i < (n - 1)) {
-	out.push(start + (i * delta));
-	i++;
-    }
-
-    out.push(end)
-    return out;
-}
 
 function lad_clicked(d) { // Handles click and zoom
     var x, y, k;
