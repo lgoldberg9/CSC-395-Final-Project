@@ -30,19 +30,19 @@ var demographicData = d3.map();
 
 // Use this table as frequently as possible when performing operations over all datasets.
 var demographic_ids = [{ value: "all", name: "Please Select" },
-                       { value: "cob", name: "Country of Birth" },
-                       { value: "eth", name: "Ethnic Group" },
-                       { value: "hpu", name: "Health and Provisions" },
-                       { value: "huw", name: "Hours Worked" },
-                       { value: "isx", name: "Industry by Sex" },
-                       { value: "lva", name: "Living Arrangements" },
-                       { value: "mla", name: "Main Language" },
-                       { value: "nid", name: "National Identity" },
-                       { value: "qus", name: "Qualifications and Students" },
-                       { value: "rel", name: "Religion" },
-                       { value: "ten", name: "Tenure" },
-                       { value: "pop", name: "Resident Population" },
-                       { value: "hhc", name: "Household Composition" }];
+                       { value: "cob", name: "Country of Birth", colorArr: ['#f7fcfd','#e5f5f9','#ccece6','#99d8c9','#66c2a4','#41ae76','#238b45','#005824'] },
+                       { value: "eth", name: "Ethnic Group", colorArr: ['#f7fcfd','#e0ecf4','#bfd3e6','#9ebcda','#8c96c6','#8c6bb1','#88419d','#6e016b'] },
+                       { value: "hpu", name: "Health and Provisions", colorArr: ['#f7fcf0','#e0f3db','#ccebc5','#a8ddb5','#7bccc4','#4eb3d3','#2b8cbe','#08589e'] },
+                       { value: "huw", name: "Hours Worked", colorArr: ['#fff7ec','#fee8c8','#fdd49e','#fdbb84','#fc8d59','#ef6548','#d7301f','#990000']  },
+                       { value: "isx", name: "Industry by Sex", colorArr: ['#fff7fb','#ece7f2','#d0d1e6','#a6bddb','#74a9cf','#3690c0','#0570b0','#034e7b'] },
+                       { value: "lva", name: "Living Arrangements", colorArr: ['#fff7fb','#ece2f0','#d0d1e6','#a6bddb','#67a9cf','#3690c0','#02818a','#016450'] },
+                       { value: "mla", name: "Main Language", colorArr: ['#f7f4f9','#e7e1ef','#d4b9da','#c994c7','#df65b0','#e7298a','#ce1256','#91003f'] },
+                       { value: "nid", name: "National Identity", colorArr: ['#fff7f3','#fde0dd','#fcc5c0','#fa9fb5','#f768a1','#dd3497','#ae017e','#7a0177'] },
+                       { value: "qus", name: "Qualifications and Students", colorArr: ['#ffffe5','#f7fcb9','#d9f0a3','#addd8e','#78c679','#41ab5d','#238443','#005a32'] },
+                       { value: "rel", name: "Religion", colorArr: ['#ffffd9','#edf8b1','#c7e9b4','#7fcdbb','#41b6c4','#1d91c0','#225ea8','#0c2c84'] },
+                       { value: "ten", name: "Tenure", colorArr: ['#ffffe5','#fff7bc','#fee391','#fec44f','#fe9929','#ec7014','#cc4c02','#8c2d04'] },
+                       { value: "pop", name: "Resident Population", colorArr: ['#ffffcc','#ffeda0','#fed976','#feb24c','#fd8d3c','#fc4e2a','#e31a1c','#b10026'] },
+                       { value: "hhc", name: "Household Composition", colorArr: ['#ffffff','#f0f0f0','#d9d9d9','#bdbdbd','#969696','#737373','#525252','#252525'] }];
 
 var brexitData = undefined;
 
@@ -62,9 +62,8 @@ d3.select('#demographic')
 
 d3.select('#subcategory')
     .on('change', function() {
-        updateSubcategoryView(demographicData.get(d3.select('#demographic').node().value),
+        updateSubcategoryView(d3.select('#demographic').node().value, // Demographic value update
                               d3.select(this).node().value);
-	// Add something involving color scale updating for legend.
     });
 
 d3.select('#brexit')
@@ -192,17 +191,15 @@ function updateDemographicView(d) {
                                      .getBoundingClientRect().right + 'px');
 }
 
-function updateSubcategoryView(demo, d) {
-   /* var colorScale = d3.scaleLinear().range(['#edf8b1',
-                                             '#7fcdbb',
-                                             '#2c7fb8']); */
-    var colorScale = d3.scaleLinear().range(['#7f3b08', '#f7f7f7', '#2d004b']);
+function updateSubcategoryView(demographicOfChoice, subcategoryOfChoice) {
+
     var tempMap = d3.map();
+    var demographicArray = demographicData.get(demographicOfChoice);
     
     var min = 1;
     var max = 0;
-    for (var i of demo) {
-        var calc = +i[d] / i['total'];
+    for (var i of demographicArray) {
+        var calc = +i[subcategoryOfChoice] / i['total'];
         tempMap.set(i.district, calc);
         if (calc < min) {
             min = calc;
@@ -212,7 +209,10 @@ function updateSubcategoryView(demo, d) {
         }
     }
 
-    colorScale.domain([min, max]);
+    var colorScale = d3.scaleLinear()
+	.range(demographic_ids.find(d => d.value === demographicOfChoice).colorArr)
+	.domain([min, max]);
+    
     svgLeft.selectAll('g').remove();
     svgLeft.selectAll('path.lad-boundary').remove();
     svgLeft.append('g')
@@ -233,9 +233,65 @@ function updateSubcategoryView(demo, d) {
         .attr("class", "lad-boundary")
         .attr("d", path);
 
-    console.log(min);
-    console.log(max);
-    updateLegendScale(min, max);
+    updateLegendScale(min, max, colorScale, subcategoryOfChoice);
+}
+
+function updateLegendScale(min, max, colorScale, subcategoryOfChoice) {
+
+    svgLeft.selectAll('defs').remove();
+    svgLeft.selectAll('rect').remove();
+    svgLeft.selectAll('text').remove();
+    svgLeft.selectAll('g.legendWrapper').remove();
+    
+    // Make gradient
+    var gradient = svgLeft.append('defs')
+	.append('linearGradient')
+	.attr('id', 'gradient')
+	.selectAll('stop')
+	.data(colorScale.range())
+	.enter()
+	.append('stop')
+	.attr("offset", function(d,i) { return i/(7); })   
+	.attr("stop-color", function(d) { return d; });
+
+    var legendWidth = width * 0.6;
+    var legendHeight = 10;
+    
+    //Color Legend container
+    var legendsvg = svgLeft.append("g")
+	.attr("class", "legendWrapper")
+	.attr("transform", "translate(" + (width/2 - 10) + "," + (height * .75) + ")");
+    
+    //Draw the Rectangle
+    legendsvg.append("rect")
+	.attr("class", "legendRect")
+	.attr("x", -legendWidth/2)
+	.attr("y", 10)
+    	.attr("width", legendWidth)
+	.attr("height", legendHeight)
+	.style("fill", 'url(#gradient)');
+    
+    //Append title
+    legendsvg.append("text")
+	.attr("class", "legendTitle")
+	.attr("x", 0)
+	.attr("y", -2)
+	.text(subcategoryOfChoice);
+    
+    //Set scale for x-axis
+    var xScale = d3.scaleLinear()
+	.range([0, legendWidth])
+	.domain([min, max]);
+    
+    //Define x-axis
+    var xAxis = d3.axisBottom(xScale)
+	.ticks(8)  //Set rough # of ticks
+    
+    //Set up X axis
+    legendsvg.append("g")
+	.attr("class", "axis")  //Assign "axis" class
+	.attr("transform", "translate(" + (-legendWidth/2) + "," + (10 + legendHeight) + ")")
+	.call(xAxis);
 }
 
 function updateBrexitView(demo, d) {
@@ -290,103 +346,6 @@ function updateBrexitView(demo, d) {
         .attr("d", path);
 
 }
-
-function updateLegendScale(min, max) {
-
-    svgLeft.selectAll('defs').remove();
-    svgLeft.selectAll('rect').remove();
-    svgLeft.selectAll('text').remove();
-    svgLeft.selectAll('g.legendWrapper').remove();
-    
-    var colorScale = d3.scaleLinear()
-        .range(['#7f3b08', '#f7f7f7', '#2d004b'])
-        .domain(linspace(min, max, 3));
-
-    console.log("Test");
-
-    // Make gradient
-    var gradient = svgLeft.append('defs')
-	.append('linearGradient')
-	.attr('id', 'gradient')
-        .attr('x1', '0%') // left
-        .attr('y1', '0%')
-        .attr('x2', '100%') // right
-        .attr('y2', '0%')
-        .attr('spreadMethod', 'pad');
-    /*	.data(colorScale.range())
-	.enter()
-	.append('stop')
-	.attr("offset", function(d,i) { return i/(2); })   
-	.attr("stop-color", function(d) { return d; }); */
-
-    var pct = linspace(0, 100, 3).map(function(d) {
-        return Math.round(d) + '%';
-    });
-
-    var colorPct = d3.zip(pct, ['#7f3b08', '#f7f7f7', '#2d004b']);
-
-    colorPct.forEach(function(d) {
-        gradient.append('stop')
-            .attr('offset', d[0])
-            .attr('stop-color', d[1])
-            .attr('stop-opacity', 1)
-    });
-
-
-    var legendWidth = width * 0.6,
-	legendHeight = 10;
-    
-    //Color Legend container
-    var legendsvg = svgLeft.append("g")
-	.attr("class", "legendWrapper")
-	.attr("transform", "translate(" + (width/2 - 10) + "," + (height * .75) + ")");
-    
-    //Draw the Rectangle
-    legendsvg.append("rect")
-	.attr("class", "legendRect")
-	.attr("x", -legendWidth/2)
-	.attr("y", 10)
-    	.attr("width", legendWidth)
-	.attr("height", legendHeight)
-	.style("fill", 'url(#gradient)');
-    
-    //Append title
-    legendsvg.append("text")
-	.attr("class", "legendTitle")
-	.attr("x", 0)
-	.attr("y", -2)
-	.text("Store Competition Index");
-    
-    //Set scale for x-axis
-    var xScale = d3.scaleLinear()
-	.range([0, legendWidth])
-	.domain([min, max]);
-    
-    //Define x-axis
-    var xAxis = d3.axisBottom(xScale)
-	.ticks(5)  //Set rough # of ticks
-    
-    //Set up X axis
-    legendsvg.append("g")
-	.attr("class", "axis")  //Assign "axis" class
-	.attr("transform", "translate(" + (-legendWidth/2) + "," + (10 + legendHeight) + ")")
-	.call(xAxis);
-}
-
-function linspace(start, end, n) {
-    var out = [];
-    var delta = (end - start) / (n - 1);
-
-    var i = 0;
-    while(i < (n - 1)) {
-        out.push(start + (i * delta));
-        i++;
-    }
-
-    out.push(end);
-    return out;
-}
-
 
 function lad_clicked(d) { // Handles click and zoom
     var x, y, k;
