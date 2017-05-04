@@ -208,10 +208,17 @@ function updateSubcategoryView(demographicOfChoice, subcategoryOfChoice) {
             max = calc;
         }
     }
+    
+    var domain = [];
+    var range = max - min;
+    var step = range / 7;
+    for (var i = 0; i < 8; i++) {
+        domain.push(min + (step * i));
+    }
 
-    var colorScale = d3.scaleLinear()
+    var colorScale = d3.scaleLog()
 	.range(demographic_ids.find(d => d.value === demographicOfChoice).colorArr)
-	.domain([min, max]);
+	.domain(domain);
     
     svgLeft.selectAll('g').remove();
     svgLeft.selectAll('path.lad-boundary').remove();
