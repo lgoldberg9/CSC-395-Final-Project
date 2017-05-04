@@ -216,7 +216,7 @@ function updateSubcategoryView(demographicOfChoice, subcategoryOfChoice) {
         domain.push(min + (step * i));
     }
 
-    var colorScale = d3.scaleLog()
+    var colorScale = d3.scaleLinear()
 	.range(demographic_ids.find(d => d.value === demographicOfChoice).colorArr)
 	.domain(domain);
     
@@ -292,7 +292,7 @@ function updateLegendScale(min, max, colorScale, subcategoryOfChoice) {
     
     //Define x-axis
     var xAxis = d3.axisBottom(xScale)
-	.ticks(8)  //Set rough # of ticks
+	.ticks(7, ',.1%');
     
     //Set up X axis
     legendsvg.append("g")
