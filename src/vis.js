@@ -71,6 +71,17 @@ d3.select('#brexit')
         updateBrexitView(brexitData, d3.select(this).node().value);
     });
 
+d3.select('#showBrexit')
+    .on('change', function() {
+	if (d3.select('#showBrexit').property('checked')) {
+	    d3.select('#mapRight')
+		.style('opacity', 1);
+	} else {
+	    d3.select('#mapRight')
+		.style('opacity', 0);
+	}
+    });
+
 
 // Queue a sequence of requests for drawing the map
 var q = d3.queue();
@@ -144,7 +155,7 @@ q.await(function(error, uk, brexit) {
 	.enter()
 	.append('path')
 	.attr('d', path)
-	.on('click', lad_clicked);
+	.on('click', LADClicked);
 
     svgLeft.append("path")
         .datum(topojson.mesh(uk, uk.objects.lad,
@@ -232,7 +243,7 @@ function updateSubcategoryView(demographicOfChoice, subcategoryOfChoice) {
             return colorScale(tempMap.get(d.properties.LAD13NM));
         })
         .attr('d', path)
-    	.on('click', lad_clicked);
+    	.on('click', LADClicked);
 
     svgLeft.append("path")
         .datum(topojson.mesh(ukTopojson, ukTopojson.objects.lad,
@@ -354,15 +365,19 @@ function updateBrexitView(demo, d) {
 
 }
 
-function lad_clicked(d) { // Handles click and zoom
+function updateLADInformation(district) {
+    
+}
+
+function LADClicked(district) { // Handles click and zoom
     var x, y, k;
     
-    if (d && centered !== d) {
-	var centroid = path.centroid(d);
+    if (district && centered !== district) {
+	var centroid = path.centroid(district);
 	x = centroid[0];
 	y = centroid[1];
 	k = 4;
-	centered = d;
+	centered = district;
     } else {
 	x = width / 2;
 	y = height / 2;
@@ -378,4 +393,6 @@ function lad_clicked(d) { // Handles click and zoom
 	.attr("transform", "translate(" + width / 2 + "," + height / 2
 	      + ")scale(" + k + ")translate(" + -x + "," + -y + ")")
 	.style("stroke-width", 1.5 / k + "px");
+
+    updateLADInformation(district);
 }
