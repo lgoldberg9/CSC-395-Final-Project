@@ -1,12 +1,12 @@
 // Define dimensions for visualization
 var width  = 600;
-var height = 800;
+var height = 700;
 var centered = null;
 
 // Set up a projection for England which is centered and
 // scaled appropriately
 var projection = d3.geoAlbers()
-    .center([2, 55.4])
+    .center([1, 55.8])
     .rotate([4.6, 0])
     .parallels([50, 60])
     .scale(1200 * 5)
@@ -16,10 +16,12 @@ var path = d3.geoPath().projection(projection);
 
 // Add an SVG element
 var svgLeft = d3.select("#mapLeft").append("svg")
+    .attr('id', 'svgLeft')
     .attr("width", width)
     .attr("height", height);
 
 var svgRight = d3.select("#mapRight").append('svg')
+    .attr('id', 'svgRight')
     .attr('width', width)
     .attr('height', height);
 
