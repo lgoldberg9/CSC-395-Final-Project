@@ -184,9 +184,17 @@ function updateDemographicView(d) {
     // Remove previous options
     d3.selectAll('#subcategory').selectAll('option').remove();
     
+    // Make array of options to be added.
+    var options = ['Please Select'];
+    for (option of Object.keys(datum[0])) {
+        if (option != 'district' && option != 'total' && option != '%') {
+            options.push(option);
+        }
+    }
+
     // Add subcategory select options
     d3.selectAll('#subcategory').selectAll('option')
-        .data(Object.keys(datum[0]))
+        .data(options)
         .enter()
         .append('option')
         .attr('value', d => d)
