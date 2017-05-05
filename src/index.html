@@ -15,24 +15,25 @@
   <body>
     <div class="full-map-container">
       <div class="row">
-	<div id="control-bar" class="sidebar">
+	<div id="control-bar" class="navigation">
 	  <div class="controls">
             <h1>Brexit Data</h1>
-            
-            <h4>Left: Demographic</h4>
-            <select id="demographic"></select>
-
-            <h5>Subcategory</h5>
-            <select id="subcategory"></select>
-
-            <h4>Right: Brexit Vote</h4>
-            <select id="brexit">
-              <option value="all" selected>Please Select</option>
-              <option value="Leave">Leave</option>
-              <option value="Remain">Remain</option>
-            </select>
-
-	    <input type="checkbox" id="showBrexit">
+	    <ul>
+              <li><h2>2011 Census Demographic Category</h2>
+		<select id="demographic"></select>
+	      </li>
+	      <li>
+		<h2>Demographic Subcategory</h2>
+		<select id="subcategory"></select>
+	      </li>
+	      <li>
+		<h2>Brexit Vote Breakdown</h2>
+		<select id="brexit">
+		  <option value="all" selected>Please Select</option>
+		  <option value="Leave">Leave</option>
+		  <option value="Remain">Remain</option>
+		</select>
+	      </li>
 	  </div>
 	</div>
 	<div id="maps">
