@@ -57,12 +57,12 @@ h3 { font-size: 1.0em; }
 }
 
 #mapLeft {
-    top: 60px;
+    top: 200px;
     border: 1px solid black;
 }
 
 #mapRight {
-    top: 60px;
+    top: 200px;
     border: 1px solid black;
 }
 
@@ -100,7 +100,7 @@ body {
 
 .legendTitle {
     text-anchor: middle;
-    font-size: 1rem;
+    font-size: 2rem;
     fill: #4F4F4F;
     font-weight: 300;
 }

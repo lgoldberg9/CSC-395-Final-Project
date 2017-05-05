@@ -288,7 +288,7 @@ function updateLegendScale(min, max, colorScale, subcategoryOfChoice) {
     //Color Legend container
     var legendsvg = svgLeft.append("g")
 	.attr("class", "legendWrapper")
-	.attr("transform", "translate(" + (width/2 - 10) + "," + (height * .75) + ")");
+	.attr("transform", "translate(" + (width/2 - 10) + "," + (height * .93) + ")");
     
     //Draw the Rectangle
     legendsvg.append("rect")
