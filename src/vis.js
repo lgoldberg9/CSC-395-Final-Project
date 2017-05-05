@@ -25,6 +25,11 @@ var svgRight = d3.select("#mapRight").append('svg')
     .attr('width', width)
     .attr('height', height);
 
+var svgStats = d3.select('#lad-statistics').append('svg')
+    .attr('id', 'svgStats')
+    .attr('width', width)
+    .attr('height', height);
+
 var ukTopojson = undefined;
 
 // Keep track of demographic data
@@ -102,13 +107,6 @@ q.defer(d3.json, '../data/uk.json')
     .defer(d3.csv, '../data/demographics/tenure.csv')
     .defer(d3.csv, '../data/demographics/usual_resident_population.csv')
     .defer(d3.csv, '../data/demographics/household_composition.csv')
-/* Load all demographic csv files
-   d3.csv('../data/demographics/datafile_names.csv', function(d) {
-   for (var datafile of d) {
-   console.log(datafile.name)
-   q.defer(d3.csv, datafile.name);
-   }
-   });*/
 
 q.await(function(error, uk, brexit) {
     // Once all requests (currently only one) are complete, this function runs
@@ -127,27 +125,6 @@ q.await(function(error, uk, brexit) {
     for (var i = demographic_starting_id; i < arguments.length; i++) {// Start after brexit argument 
         demographicData.set(demographic_ids[i - 2].value, arguments[i]);
     }
-    
-    /*
-    // Create legend for voting scale
-    for(var i = 0; i <= 8; i++) {
-    svgRight.append('rect')
-    .attr('x', width * .25 + 30 * i)
-    .attr('y', height * .75 + 50)
-    .attr('width', 25)
-    .attr('height', 25)
-    .attr('stroke', '#000')
-    .attr('stroke-width', '0.5px')
-    .attr('fill', colorScaleVotes(legendVoteScale(i)));
-    
-    svgRight.append('text')
-    .attr('x', width * .25 + 30 * i - 5)
-    .attr('y', height * .75 + 90)
-    .attr('font-family', 'sans-serif')
-    .attr('font-size', '8pt')
-    .text(d3.format('+.1%')(legendVoteScale(i)));
-    }
-    */
     
     // Draw land (reformatted to generate lads by lad)
     svgLeft.append('g')
@@ -175,8 +152,6 @@ q.await(function(error, uk, brexit) {
                              function(a, b) { return a !== b; }))
         .attr("class", "lad-boundary")
         .attr("d", path);
-    
-
 });
 
 function updateDemographicView(d) {
@@ -375,10 +350,6 @@ function updateBrexitView(demo, d) {
 
 }
 
-function updateLADInformation(district) {
-    
-}
-
 function LADClicked(district) { // Handles click and zoom
     var x, y, k;
     
@@ -404,5 +375,57 @@ function LADClicked(district) { // Handles click and zoom
 	      + ")scale(" + k + ")translate(" + -x + "," + -y + ")")
 	.style("stroke-width", 1.5 / k + "px");
 
-    updateLADInformation(district);
+    updateStatsRight(district);
+}
+
+function updateStatsRight(district) {
+    var margin = {top: 20, right: 20, bottom: 30, left: 40};
+    
+    var data = demographicData.get(d3.select('#demographic').node().value)
+    
+    var stats = data.find(d => d.district === district.properties.LAD13NM);
+
+    var values = [];
+
+    for (var key in stats) {
+        values.push(+stats[key]);
+    }
+    values.shift();
+    values.shift();
+    
+
+    console.log(values);
+    
+    var x = d3.scaleBand().rangeRound([0, width]).padding(0.1),
+        y = d3.scaleLinear().rangeRound([height, 0]);
+
+    var g = svgStats.append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    x.domain(Object.keys(stats));
+    y.domain([0, d3.max(values)]);
+
+    g.append("g")
+        .attr("class", "axis axis--x")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(x));
+
+    g.append("g")
+        .attr("class", "axis axis--y")
+        .call(d3.axisLeft(y).ticks(10, "%"))
+        .append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 6)
+        .attr("dy", "0.71em")
+        .attr("text-anchor", "end")
+        .text("Frequency");
+
+    g.selectAll(".bar")
+        .data(values)
+        .enter().append("rect")
+        .attr("class", "bar")
+        .attr("x", function(d, i) { return x(Object.keys(stats)[i+2]); })
+        .attr("y", function(d) { return y(d); })
+        .attr("width", x.bandwidth())
+        .attr("height", function(d) { return height - y(d); });
 }

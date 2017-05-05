@@ -64,6 +64,7 @@ h3 { font-size: 1.0em; }
 #mapRight {
     top: 200px;
     border: 1px solid black;
+    z-index: 1;
 }
 
 #svgLeft {
@@ -76,7 +77,15 @@ h3 { font-size: 1.0em; }
     margin: auto;
 }
 
-body {
+#lad-statistics {
+    position: absolute;
+    left: 49%;
+    width: 51%;
+    height: 100%;
+    top: 200px;
+    z-index: 2;
+    background-color: #f5f5f5;
+    border-left: 2px solid #abc;
 }
 
 #maps {
@@ -104,3 +113,16 @@ body {
     fill: #4F4F4F;
     font-weight: 300;
 }
+
+.bar {
+  fill: steelblue;
+}
+
+.bar:hover {
+  fill: brown;
+}
+
+.axis--x path {
+  display: none;
+}
+
