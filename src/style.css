@@ -22,8 +22,11 @@ h3 { font-size: 1.5em; }
 
 .container {
     position: relative;
+    top: 60px;
     float: left;
-    left: 204px;
+    width: 49%;
+    margin: auto;
+    border: 1px solid black;
 }
 
 /* Margin on sidebar headings */
@@ -42,7 +45,22 @@ h3 { font-size: 1.5em; }
 
 #mapLeft {
     margin-top: 5%;
-    margin-left: 5%;
+    margin: auto auto auto 0;
+}
+
+#mapRight {
+    margin-top: 5%;
+    margin: auto 0 auto auto;
+}
+
+#svgLeft {
+    display: block;
+    margin: auto;
+}
+
+#svgRight {
+    display: block;
+    margin: auto;
 }
 
 body {
