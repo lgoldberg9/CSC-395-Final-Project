@@ -53,6 +53,10 @@ var demographic_ids = [{ value: "all", name: "Please Select" },
 
 var brexitData = undefined;
 
+// Define tooltip div for hovering
+var tooltip = d3.select("body").append("div")	
+    .attr("class", "tooltip")				
+    .style("opacity", 0);
 
 // Create demographic options for left map
 d3.selectAll('#demographic').selectAll('option')
@@ -88,7 +92,6 @@ d3.select('#showBrexit')
 		.style('opacity', 0);
 	}
     });
-
 
 // Queue a sequence of requests for drawing the map
 var q = d3.queue();
@@ -134,7 +137,16 @@ q.await(function(error, uk, brexit) {
 	.enter()
 	.append('path')
 	.attr('d', path)
-	.on('click', LADClicked);
+	.on('click', LADClicked)
+	.on('mouseover', function(d) {
+	    tooltip.style("opacity", .9);		
+            tooltip.text(d.properties.LAD13NM)	
+                .style("left", (d3.event.pageX) + "px")		
+                .style("top", (d3.event.pageY - 28) + "px")
+		.style('font-weight', 'bold')
+		.style('font-size', 18 + 'px');
+	})
+	.on('mouseout', tooltipHide);
 
     svgLeft.append("path")
         .datum(topojson.mesh(uk, uk.objects.lad,
@@ -144,9 +156,9 @@ q.await(function(error, uk, brexit) {
 
     svgRight.append('path')
         .datum(topojson.feature(uk, uk.objects.lad))
-        .attr("class", "land")
-        .attr("d", path);
-
+	.attr('class', 'land')
+	.attr("d", path);
+    
     svgRight.append("path")
         .datum(topojson.mesh(uk, uk.objects.lad,
                              function(a, b) { return a !== b; }))
@@ -228,7 +240,17 @@ function updateSubcategoryView(demographicOfChoice, subcategoryOfChoice) {
             return colorScale(tempMap.get(d.properties.LAD13NM));
         })
         .attr('d', path)
-    	.on('click', LADClicked);
+    	.on('click', LADClicked)
+	.on('mouseover', function(d) {
+	    tooltip.style("opacity", .9);		
+            tooltip.text(d.properties.LAD13NM)	
+                .style("left", (d3.event.pageX) + "px")		
+                .style("top", (d3.event.pageY - 28) + "px")
+		.style('font-weight', 'bold')
+		.style('font-size', 18 + 'px');
+	})
+	.on('mouseout', tooltipHide);
+
 
     svgLeft.append("path")
         .datum(topojson.mesh(ukTopojson, ukTopojson.objects.lad,
@@ -305,7 +327,7 @@ function updateBrexitView(demo, d) {
 
     var pct = undefined;
     var votes = d3.map();
-
+    
     for (var row of demo) {
         if (d == 'Leave') {
             pct = parseInt(row.Pct_Leave);
@@ -340,7 +362,17 @@ function updateBrexitView(demo, d) {
         .enter()
         .append('path')
         .attr('fill', d => colorScaleVotes(votes.get(d.id)))
-        .attr('d', path);
+        .attr('d', path)
+	.on('mouseover', function(d) {
+	    tooltip.style("opacity", .9);		
+            tooltip.text(d.properties.LAD13NM)	
+                .style("left", (d3.event.pageX) + "px")		
+                .style("top", (d3.event.pageY - 28) + "px")
+		.style('font-weight', 'bold')
+		.style('font-size', 18 + 'px');
+	})
+	.on('mouseout', tooltipHide);
+
 
     svgRight.append("path")
         .datum(topojson.mesh(ukTopojson, ukTopojson.objects.lad,
@@ -359,11 +391,23 @@ function LADClicked(district) { // Handles click and zoom
 	y = centroid[1];
 	k = 4;
 	centered = district;
+	// Change Brexit Map
+	d3.select('#lad-statistics')
+	    .style('z-index', 1)
+	    .style('opacity', 1);
+	d3.select('#mapRight')
+	    .style('z-index', 0);
     } else {
 	x = width / 2;
 	y = height / 2;
 	k = 1;
 	centered = null;
+	// Change Brexit Map
+	d3.select('#lad-statistics')
+	    .style('z-index', 0)
+	    .style('opacity', 0);
+	d3.select('#mapRight')
+	    .style('z-index', 1);
     }
     
     svgLeft.selectAll("path")
@@ -379,9 +423,13 @@ function LADClicked(district) { // Handles click and zoom
 }
 
 function updateStatsRight(district) {
+
+    /*****************************************
+     ******* ADD DEMOGRAPHIC BAR CHART *******
+     *****************************************/
     d3.select('#svgStats').selectAll('g').remove();
     
-    var margin = {top: 20, right: 100, bottom: 100, left: 60};
+    var margin = {top: 50, right: 100, bottom: 100, left: 60};
         statsWidth  = width - margin.left - margin.right,
         statsHeight = height - margin.top - margin.bottom;
     
@@ -399,23 +447,23 @@ function updateStatsRight(district) {
         values.push(+stats[key]);
     }
     values.shift();
-    values.shift();
-    
-
-    console.log(values);
-    
+    values.shift(); // Drop total
+        
     var x = d3.scaleBand().rangeRound([0, statsWidth]).padding(0.1),
         y = d3.scaleLinear().rangeRound([statsHeight, 0]);
-
-    var g = svgStats.append("g")
+    
+    var gDemo = svgStats.append("g")
+	.attr('class', 'col-8')
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+    var barFill = demographic_ids.find(d => d.value === d3.select('#demographic').node().value).colorArr[4];
+    
     x.domain(keys);
     y.domain([0, d3.max(values)]);
 
     var xAxis = d3.axisBottom(x);
     
-    g.append("g")
+    gDemo.append("g")
         .attr("class", "x axis")
         .attr("transform", "translate(0," + statsHeight + ")")
         .call(xAxis)
@@ -425,17 +473,50 @@ function updateStatsRight(district) {
         .attr("dy", ".35em")
         .attr("transform", "rotate(55)")
         .style("text-anchor", "start");
+
+    gDemo.append("text")
+        .attr("x", (statsWidth / 2))             
+        .attr("y", 0 - (margin.top / 2))
+        .attr("text-anchor", "middle")  
+        .style("font-size", "16px") 
+        .style("text-decoration", "underline")
+	.text(d3.select('#demographic').node().value + ' Statistics of ' + district.properties.LAD13NM);
     
-/*
-    d3.selectAll('.axis--x g text')
-        .attr('transform', 'rotate(65');
-  
-    g.append("g")
-        .attr("class", "axis axis--x")
-        .attr("transform", "translate(0," + statsHeight + ")")
-        .call(d3.axisBottom(x));
-*/
-    g.append("g")
+    gDemo.append("g")
+        .attr("class", "axis axis--y")
+        .call(d3.axisLeft(y).ticks(10))
+        .append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 6)
+        .attr("dy", "0.71em")
+        .attr("text-anchor", "end")
+        .text("Frequency");
+    
+    gDemo.selectAll(".bar")
+        .data(values)
+        .enter().append("rect")
+        .attr("class", "bar")
+        .attr("x", function(d, i) { return x(keys[i]); })
+        .attr("y", function(d) { return y(d); })
+	.style('fill', barFill)
+        .attr("width", x.bandwidth())
+        .attr("height", function(d) { return statsHeight - y(d); })
+	.on('mouseover', tooltipShow)
+	.on('mouseout', tooltipHide)
+
+    
+    /*****************************************
+     ******* ADD BREXIT VOTE BAR CHART *******
+     *****************************************/
+
+    var brexitDataForDistrict = brexitData.find(d => d.Area === district.properties.LAD13NM);
+    var votingData = [brexitDataForDistrict.Pct_Remain, brexitDataForDistrict.Pct_Leave];
+    
+    var gBrexit = svgStats.append("g")
+	.attr('class', 'col-4');
+
+    
+    gBrexit.append("g")
         .attr("class", "axis axis--y")
         .call(d3.axisLeft(y).ticks(10))
         .append("text")
@@ -445,12 +526,19 @@ function updateStatsRight(district) {
         .attr("text-anchor", "end")
         .text("Frequency");
 
-    g.selectAll(".bar")
-        .data(values)
-        .enter().append("rect")
-        .attr("class", "bar")
-        .attr("x", function(d, i) { return x(keys[i]); })
-        .attr("y", function(d) { return y(d); })
-        .attr("width", x.bandwidth())
-        .attr("height", function(d) { return statsHeight - y(d); });
+    
+    
+}
+
+function tooltipShow(d) {
+    tooltip.style("opacity", .9);		
+    tooltip.text(d)	
+        .style("left", (d3.event.pageX) + "px")		
+        .style("top", (d3.event.pageY - 28) + "px")
+	.style('font-weight', 'bold')
+	.style('font-size', 18 + 'px');
+}
+
+function tooltipHide(d) {
+    tooltip.style("opacity", 0);	
 }
