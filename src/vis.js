@@ -379,15 +379,23 @@ function LADClicked(district) { // Handles click and zoom
 }
 
 function updateStatsRight(district) {
-    var margin = {top: 20, right: 20, bottom: 30, left: 40};
+    d3.select('#svgStats').selectAll('g').remove();
+    
+    var margin = {top: 20, right: 100, bottom: 100, left: 60};
+        statsWidth  = width - margin.left - margin.right,
+        statsHeight = height - margin.top - margin.bottom;
     
     var data = demographicData.get(d3.select('#demographic').node().value)
     
     var stats = data.find(d => d.district === district.properties.LAD13NM);
 
+    var keys   = [];
     var values = [];
 
     for (var key in stats) {
+        if (key != 'district' && key != 'total') {
+            keys.push(key);
+        }
         values.push(+stats[key]);
     }
     values.shift();
@@ -396,23 +404,40 @@ function updateStatsRight(district) {
 
     console.log(values);
     
-    var x = d3.scaleBand().rangeRound([0, width]).padding(0.1),
-        y = d3.scaleLinear().rangeRound([height, 0]);
+    var x = d3.scaleBand().rangeRound([0, statsWidth]).padding(0.1),
+        y = d3.scaleLinear().rangeRound([statsHeight, 0]);
 
     var g = svgStats.append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    x.domain(Object.keys(stats));
+    x.domain(keys);
     y.domain([0, d3.max(values)]);
 
+    var xAxis = d3.axisBottom(x);
+    
+    g.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + statsHeight + ")")
+        .call(xAxis)
+        .selectAll("text")
+        .attr("y", 0)
+        .attr("x", 9)
+        .attr("dy", ".35em")
+        .attr("transform", "rotate(55)")
+        .style("text-anchor", "start");
+    
+/*
+    d3.selectAll('.axis--x g text')
+        .attr('transform', 'rotate(65');
+  
     g.append("g")
         .attr("class", "axis axis--x")
-        .attr("transform", "translate(0," + height + ")")
+        .attr("transform", "translate(0," + statsHeight + ")")
         .call(d3.axisBottom(x));
-
+*/
     g.append("g")
         .attr("class", "axis axis--y")
-        .call(d3.axisLeft(y).ticks(10, "%"))
+        .call(d3.axisLeft(y).ticks(10))
         .append("text")
         .attr("transform", "rotate(-90)")
         .attr("y", 6)
@@ -424,8 +449,8 @@ function updateStatsRight(district) {
         .data(values)
         .enter().append("rect")
         .attr("class", "bar")
-        .attr("x", function(d, i) { return x(Object.keys(stats)[i+2]); })
+        .attr("x", function(d, i) { return x(keys[i]); })
         .attr("y", function(d) { return y(d); })
         .attr("width", x.bandwidth())
-        .attr("height", function(d) { return height - y(d); });
+        .attr("height", function(d) { return statsHeight - y(d); });
 }
