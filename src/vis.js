@@ -36,7 +36,7 @@ var ukTopojson = undefined;
 var demographicData = d3.map();
 
 // Use this table as frequently as possible when performing operations over all datasets.
-var demographic_ids = [{ value: "cob", name: "Country of Birth", colorArr: ['#f7fcfd','#e5f5f9','#ccece6','#99d8c9','#66c2a4','#41ae76','#238b45','#005824'] },
+var demographic_ids = [{ value: "cob", name: "Region of Birth", colorArr: ['#f7fcfd','#e5f5f9','#ccece6','#99d8c9','#66c2a4','#41ae76','#238b45','#005824'] },
                        { value: "eth", name: "Ethnic Group", colorArr: ['#f7fcfd','#e0ecf4','#bfd3e6','#9ebcda','#8c96c6','#8c6bb1','#88419d','#6e016b'] },
                        { value: "hpu", name: "Health and Provisions", colorArr: ['#f7fcf0','#e0f3db','#ccebc5','#a8ddb5','#7bccc4','#4eb3d3','#2b8cbe','#08589e'] },
                        { value: "huw", name: "Hours Worked", colorArr: ['#fff7ec','#fee8c8','#fdd49e','#fdbb84','#fc8d59','#ef6548','#d7301f','#990000']  },
@@ -439,7 +439,7 @@ function updateStatsRight(district) {
      *****************************************/
     d3.select('#svgStats').selectAll('g').remove();
     
-    var margin = {top: 50, right: 100, bottom: 100, left: 60};
+    var margin = {top: 50, right: 100, bottom: 200, left: 60};
         statsWidth  = width - margin.left - margin.right,
         statsHeight = height - margin.top - margin.bottom;
     
@@ -491,7 +491,7 @@ function updateStatsRight(district) {
         .style("font-size", "16px") 
         .style("text-decoration", "underline")
 	.text(demographic_ids.find(d => d.value === d3.select('#demographic').node().value).name
-              + ' Statistics of ' + district.properties.LAD13NM);
+              + ' Statistics for ' + district.properties.LAD13NM);
     
     gDemo.append("g")
         .attr("class", "axis axis--y")
@@ -519,7 +519,6 @@ function updateStatsRight(district) {
     /*****************************************
      ******* ADD BREXIT VOTE BAR CHART *******
      *****************************************/
-
     var brexitDataForDistrict = brexitData.find(d => d.Area === district.properties.LAD13NM);
     var votingData = [brexitDataForDistrict.Remain, brexitDataForDistrict.Leave];
     var brexitColors = [ '#ef8a62', '#67a9cf' ];
@@ -548,7 +547,9 @@ function updateStatsRight(district) {
         .attr('x', statsWidth + 110)
         .attr('y', function(d, i) { return i * (statsHeight - yBrexit(votingData[0])) + 50; })
         .style('fill', function(d,i) { return brexitColors[i]; })
-        .attr('width', 100)
+	.style('stroke-width', '2px')
+	.style('stroke', '#fff')
+        .attr('width', 80)
         .attr('height', function(d,i) { return statsHeight - yBrexit(d); })
         .on('mouseover', tooltipShow)
         .on('mouseout', tooltipHide);
