@@ -650,6 +650,15 @@ function updateStatsRight(district) {
         .attr('height', function(d,i) { return statsHeight - yBrexit(d); })
         .on('mouseover', tooltipShow)
         .on('mouseout', tooltipHide);
+
+    // Add the title for the stacked bar chart representing the Brexit vote.
+    gBrexit.append("text")
+        .attr("x", statsWidth + 110)             
+        .attr("y", 0 + (margin.top * 0.75))
+        .attr("text-anchor", "middle")  
+        .style("font-size", "10px") 
+        .style("text-decoration", "underline")
+	.text('Referendum Results');
 }
 
 /* Function to show a tool tip when the mouse hovers over either a district
