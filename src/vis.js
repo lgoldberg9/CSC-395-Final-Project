@@ -95,6 +95,18 @@ d3.select('#brexit')
         updateBrexitView(brexitData, d3.select(this).node().value);
     });
 
+/* Popup for tutorial and help features */
+$(document).ready(function() {
+    $('.about-popup').magnificPopup({
+	type:'inline',
+	midClick: true
+    });
+    $('.glossary-popup').magnificPopup({
+	type:'inline',
+	midClick: true
+    });
+});
+
 // Queue a sequence of requests for parsing the data into the visualization.
 var q = d3.queue();
 q.defer(d3.json, '../data/uk.json')
@@ -656,3 +668,9 @@ function tooltipShow(d) {
 function tooltipHide(d) {
     tooltip.style("opacity", 0);	
 }
+
+
+
+
+
+

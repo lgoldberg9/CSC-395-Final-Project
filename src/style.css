@@ -12,6 +12,15 @@ body {
     height: 100%;
 }
 
+.white-popup {
+  position: relative;
+  background: #FFF;
+  padding: 20px;
+  width: auto;
+  max-width: 500px;
+  margin: 20px auto;
+}
+
 /* Properties of navbar */
 .navigation {
     top: 0;
