@@ -56,7 +56,7 @@ var demographic_ids = [{ value: "cob", name: "Region of Birth", colorArr: ['#f7f
                        { value: "rel", name: "Religion", colorArr: ['#ffffd9','#edf8b1','#c7e9b4','#7fcdbb','#41b6c4','#1d91c0','#225ea8','#0c2c84'] },
                        { value: "ten", name: "Tenure", colorArr: ['#ffffe5','#fff7bc','#fee391','#fec44f','#fe9929','#ec7014','#cc4c02','#8c2d04'] },
                        { value: "pop", name: "Resident Population", colorArr: ['#ffffcc','#ffeda0','#fed976','#feb24c','#fd8d3c','#fc4e2a','#e31a1c','#b10026'] },
-                       { value: "hhc", name: "Household Composition", colorArr: ['#ffffff','#f0f0f0','#d9d9d9','#bdbdbd','#969696','#737373','#525252','#252525'] }];
+                       { value: "hhc", name: "Household Composition", colorArr: ['#fafafa','#f0f0f0','#d9d9d9','#bdbdbd','#969696','#737373','#525252','#252525'] }];
 
 // Define tooltip div for hovering
 var tooltip = d3.select("body").append("div")	
@@ -211,11 +211,11 @@ function updateDemographicView(d) {
                 return d;
             }
         });
-
+/* Do we need this feature? It broke when I did the restructuring.
     // Add appropriate CSS styling options to allow for zooming in.
-    d3.selectAll('.container').style('left', '' + d3.select('#control-bar')
+    d3.selectAll('.container-liquid').style('left', '' + d3.select('#navigation')
                                      .node()
-                                     .getBoundingClientRect().right + 'px');
+                                     .getBoundingClientRect().right + 'px');*/
 }
 
 /* Function to update the left-most map to display the data of the chosen
@@ -439,7 +439,8 @@ function updateBrexitView(demo, d) {
         .attr("d", path);
 
     // Create the legend for the right-most map.
-    updateLegendScale(legendMinVotes, legendMaxVotes, colorScaleVotes, 'Brexit Votes', svgRight, 2, 'Right');
+    updateLegendScale(legendMinVotes, legendMaxVotes, colorScaleVotes,
+		      'Percentage of Votes in Referendum', svgRight, 2, 'Right');
 }
 
 /* Function which will zoom in on the district when clicked. This function

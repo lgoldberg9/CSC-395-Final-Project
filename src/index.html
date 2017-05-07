@@ -14,38 +14,70 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
   </head>
   <body>
-    <div class="full-map-container">
-      <div class="row">
-	<div id="control-bar" class="navigation">
-	  <div class="controls">
-            <h1>Brexit Data</h1>
-	    <ul>
-              <li><h2>2011 Census Demographic Category</h2>
-		<select id="demographic"></select>
-	      </li>
-	      <li>
-		<h2>Demographic Subcategory</h2>
-		<select id="subcategory"></select>
-	      </li>
-	      <li>
-		<h2>Brexit Vote Breakdown</h2>
-		<select id="brexit">
-		  <option value="Leave">Leave</option>
-		  <option value="Remain" selected>Remain</option>
-		</select>
-	      </li>
-	  </div>
-	</div>
-      </div>
-      <div class="row" id="maps">
-	  <div class="col-lg-6" id="mapLeft"></div>
-          <div class="col-lg-6" id="mapRight">
-	      <div id="lad-statistics">
-	      </div>
+    <div class="container-liquid">
+	<div class="navigation">
+	  <div class="row header align-items-center">
+	    <div class="col-lg-2 space">
+	      <!-- Used for spacing only -->
+	    </div>
+	    <div class="col-lg-8 title">
+	      <h1>Brexit Data</h1>
+	    </div>
+	    <div class="col-lg-1 center-block text-center align-self-center">
+	      <a href="#about">About</a>
+	    </div>
+	    <div class="col-lg-1 center-block text-center align-self-center">
+	      <a href="#glossary">Glossary</a>
 	    </div>
 	  </div>
+	  <div class="row controls">
+	    <div class="col-lg-3 center-block text-center vcenter">
+	      <h2>Census Demographic Category</h2>
+	    </div>
+	    <div class="col-lg-6 center-block text-center vcenter">
+	      <h2>Demographic Subcategory</h2>
+	    </div>
+	    <div class="col-lg-3 center-block text-center vcenter">
+	      <h2>Brexit Vote Breakdown</h2>
+	    </div>
+	  </div>
+	  <div class="row">
+	    <div class="col-lg-3 center-block text-center">
+	      <select id="demographic"></select>
+	    </div>
+	    <div class="col-lg-6 center-block text-center">
+	      <select id="subcategory"></select>
+	    </div>
+	    <div class="col-lg-3 center-block text-center">
+	      <select id="brexit">
+		<option value="Leave">Leave</option>
+		<option value="Remain" selected>Remain</option>
+	      </select>
+	    </div>
+	</div>
       </div>
+	<div id="maps">
+	  <div class="col-lg-6" id="mapLeft"></div>
+          <div class="col-lg-6" id="mapRight">
+	    <div id="lad-statistics"></div>
+	  </div>
+	</div>
+	<script type="text/javascript" src="vis.js"></script>
     </div>
-    <script type="text/javascript" src="vis.js"></script>
   </body>
 </html>
+<!--
+ <ul>
+	    <li>
+	    
+	    </li>
+	    <li>
+	      <div class="help">
+		<ul>
+		  <li><a href="#about">About</a></li>
+		  <li><a href="#glossary">Glossary</a></li>
+		</ul>
+	      </div>
+	    </li>
+	  </ul>
+ -->
