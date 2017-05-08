@@ -11,6 +11,15 @@ body {
     width: 100%;
     height: 100%;
 }
+/*
+.glossary-popup {
+    fill: #000;
+    z-index: 1;
+}
+*/
+#glossary {
+    color: #000000;
+}
 
 /* Define the pop-up bubble when a district is hovered over. Have the */
 /* background to be white with an automatic width depending upon the */
@@ -20,7 +29,8 @@ body {
   background: #FFF;
   padding: 20px;
   width: auto;
-  max-width: 90%;
+  min-width: 40%;
+  max-width: 99%;
   margin: 20px auto;
 }
 
@@ -44,7 +54,7 @@ body {
 .tab-help {
     padding: 0 0 .35em 0;
     color: #000;
-    top: 1px;
+    top: 0px;
     font-size: 18px;
 }
 
@@ -55,12 +65,23 @@ body {
     float: center;
 }
 
-.tab-help a::before {
-    content: '';
+.tab-help a.about-popup::before {
+    content: 'About';
     position: absolute;
     display: block;
     top: 0; right: 0; bottom: -1px; left: 0;
-    transform: perspective(0.5em) rotateX(-5deg);
+    transform-origin: bottom;
+    background-color: #fff;
+    border: 1px solid #000;
+    border-width: 1px 1px 1px 1px;
+    border-radius: .0em .0em .5em .5em;
+}
+
+.tab-help a.glossary-popup::before {
+    content: 'Glossary';
+    position: absolute;
+    display: block;
+    top: 0; right: 0; bottom: -1px; left: 0;
     transform-origin: bottom;
     background-color: #fff;
     border: 1px solid #000;

@@ -107,6 +107,9 @@ $(document).ready(function() {
     });
 });
 
+d3.select('#about').append
+
+
 // Queue a sequence of requests for parsing the data into the visualization.
 var q = d3.queue();
 q.defer(d3.json, '../data/uk.json')
@@ -138,7 +141,7 @@ q.await(function(error, uk, brexit) {
     brexitData = brexit;
     
     // If processes are deferred earlier in queue than csv's, change demographic_starting_id accordingly
-    var demographic_starting_id = 3;
+    var demographic_starting_id = 4;
     
     /* Put the demographic data into a d3 map in which the key is the HTML
      * option value */
@@ -186,7 +189,7 @@ q.await(function(error, uk, brexit) {
                              function(a, b) { return a !== b; }))
         .attr("class", "lad-boundary")
         .attr("d", path);
-
+    
     /* Force update upon loading the visualization for the first time.
      * Load the default demographic and voting data. */
     updateDemographicView(d3.select('#demographic').node().value);
