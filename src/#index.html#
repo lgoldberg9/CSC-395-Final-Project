@@ -72,6 +72,7 @@
     <!-- #glossary popup -->
     <div id="glossary" class="white-popup mfp-hide">
       <img src="../data/images/alpaca_gloss.png" height="400" width="400">
+      
     </div>
   </body>
 </html>
