@@ -1,17 +1,20 @@
-/* Reduce heading sizes */
+/* Reduce heading sizes. */
 h1 {
     font-size: 2.0em;
     text-align: center;
 }
-
 h2 { font-size: 1.4em; }
 h3 { font-size: 1.0em; }
 
+/* Define body to be 100% in both dimensions. */
 body {
     width: 100%;
     height: 100%;
 }
 
+/* Define the pop-up bubble when a district is hovered over. Have the */
+/* background to be white with an automatic width depending upon the */
+/* text size. */
 .white-popup {
   position: relative;
   background: #FFF;
@@ -21,7 +24,7 @@ body {
   margin: 20px auto;
 }
 
-/* Properties of navbar */
+/* Properties of top navbar. */
 .navigation {
     top: 0;
     left: 0;
@@ -36,14 +39,8 @@ body {
     border-bottom: 2px solid #abc;
 }
 
-.controls ul {
-    list-style-type: none;
-}
-
-.controls li {
-    display: inline-block;
-}
-
+/* Underlay the navbar with a unordered list structure but hide any*/
+/* attributes that would come by default. */
 .tab-help {
     padding: 0 0 .35em 0;
     color: #000;
@@ -71,6 +68,7 @@ body {
     border-radius: .0em .0em .5em .5em;
 }
 
+/* Define margins for the two maps. */
 #maps {
     margin-top: 10px;
     margin-left: 0;
@@ -78,6 +76,7 @@ body {
     margin-bottom: 0;
 }
 
+/* Set a width for the subcategory 'select' bar. */
 #subcategory {
     width: 80%;
 }
@@ -89,30 +88,37 @@ body {
     margin-right:-4px;
 }
 
-/* Add some space above the map */
+/* Add some space above the map. */
 #map svg {
     margin-top: 3em;
 }
 
+/* Draw a small, black border around the left map. */
 #mapLeft {
     border: 1px solid black;
 }
 
+/* Draw a small, black border around the right map but have it be*/
+/* less deep than the statistics to allow for removing and adding the*/
+/* map at will.*/
 #mapRight {
     border: 1px solid black;
     z-index: 1;
 }
 
+/* Display the two major SVGs in a block format with automatic margins. */
 #svgLeft {
     display: block;
     margin: auto;
 }
-
 #svgRight {
     display: block;
     margin: auto;
 }
 
+/* Define the attributes for the detailed statistics view when a district*/
+/* is clicked. Have the z-index be greater than the right most map to allow*/
+/* it to be displayed above the map.*/
 #lad-statistics {
     position: absolute;
     width: 100%;
@@ -125,25 +131,32 @@ body {
     border: 2px solid #def;
 }
 
+/* Let all maps be 100% in both dimensions according to the user's resolution.*/
 #maps {
     width: 100%;
     height: 100%;
 }
 
+/* Define the default selection fill to be black for each district. */
 #lad {
     fill: #000;
 }
 
+/* Color the district orange if the district is clicked on *if* it is*/
+/* not already colored.*/
 #lad .active {
     fill: orange;
 }
 
+/* Define the district boundary to have gray lines of 1px in size. */
 .lad-boundary {
     fill: none;
     stroke: #aaa;
     stroke-width: 1px;
 }
 
+/* Define the title for the legends that appear to be centered with*/
+/* black-ish font color.*/
 .legendTitle {
     text-anchor: middle;
     font-size: 2rem;
@@ -151,18 +164,24 @@ body {
     font-weight: 300;
 }
 
+/* Define the default bar color to be steel blue. The bars in question*/
+/* refer to those that are displayed when a district is clicked.*/
 .bar {
   fill: steelblue;
 }
 
+/* Define the default bar color to be brown when the bar is hovered over. */
 .bar:hover {
   fill: brown;
 }
 
+/* Define that the x-axis path for the bar chart to not appear. */
 .axis--x path {
   display: none;
 }
 
+/* Define the stylistic elements for the tooltip that appears when*/
+/* district/bar is hovered over.*/
 .tooltip {/* Citation: http://bl.ocks.org/d3noob/a22c42db65eb00d4e369, on May 6th 2017 */
     position: absolute;			
     text-align: center;			
