@@ -48,7 +48,7 @@ var demographic_ids = [{ value: "cob", name: "Region of Birth", colorArr: ['#f7f
                        { value: "eth", name: "Ethnic Group", colorArr: ['#f7fcfd','#e0ecf4','#bfd3e6','#9ebcda','#8c96c6','#8c6bb1','#88419d','#6e016b'] },
                        { value: "hpu", name: "Health and Provisions", colorArr: ['#f7fcf0','#e0f3db','#ccebc5','#a8ddb5','#7bccc4','#4eb3d3','#2b8cbe','#08589e'] },
                        { value: "huw", name: "Hours Worked", colorArr: ['#fff7ec','#fee8c8','#fdd49e','#fdbb84','#fc8d59','#ef6548','#d7301f','#990000']  },
-                       { value: "isx", name: "Industry by Sex", colorArr: ['#fff7fb','#ece7f2','#d0d1e6','#a6bddb','#74a9cf','#3690c0','#0570b0','#034e7b'] },
+                       { value: "isx", name: "Industry", colorArr: ['#fff7fb','#ece7f2','#d0d1e6','#a6bddb','#74a9cf','#3690c0','#0570b0','#034e7b'] },
                        { value: "lva", name: "Living Arrangements", colorArr: ['#fff7fb','#ece2f0','#d0d1e6','#a6bddb','#67a9cf','#3690c0','#02818a','#016450'] },
                        { value: "mla", name: "Main Language", colorArr: ['#f7f4f9','#e7e1ef','#d4b9da','#c994c7','#df65b0','#e7298a','#ce1256','#91003f'] },
                        { value: "nid", name: "National Identity", colorArr: ['#fff7f3','#fde0dd','#fcc5c0','#fa9fb5','#f768a1','#dd3497','#ae017e','#7a0177'] },
