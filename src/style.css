@@ -36,16 +36,39 @@ body {
     border-bottom: 2px solid #abc;
 }
 
-.help ul, .controls ul {
+.controls ul {
     list-style-type: none;
 }
 
-.help li, .controls li {
+.controls li {
     display: inline-block;
 }
 
-.help li a {
+.tab-help {
+    padding: 0 0 .35em 0;
+    color: #000;
+    top: 1px;
     font-size: 18px;
+}
+
+.tab-help a {
+    display: block;
+    position: relative;
+    text-decoration: none;
+    float: center;
+}
+
+.tab-help a::before {
+    content: '';
+    position: absolute;
+    display: block;
+    top: 0; right: 0; bottom: -1px; left: 0;
+    transform: perspective(0.5em) rotateX(-5deg);
+    transform-origin: bottom;
+    background-color: #fff;
+    border: 1px solid #000;
+    border-width: 1px 1px 1px 1px;
+    border-radius: .0em .0em .5em .5em;
 }
 
 #maps {
