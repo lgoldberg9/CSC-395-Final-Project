@@ -297,7 +297,8 @@ function updateSubcategoryView(demographicOfChoice, subcategoryOfChoice) {
     	.on('click', LADClicked)
 	.on('mouseover', function(d) {
 	    tooltip.style("opacity", .9);		
-            tooltip.text(d.properties.LAD13NM)	
+            tooltip.text(d.properties.LAD13NM + ': ' +
+			 Math.round(100 * tempMap.get(d.properties.LAD13NM)) + '%')	
                 .style("left", (d3.event.pageX) + "px")		
                 .style("top", (d3.event.pageY - 28) + "px")
 		.style('font-weight', 'bold')
