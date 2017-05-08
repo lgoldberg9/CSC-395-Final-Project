@@ -159,7 +159,7 @@ q.await(function(error, uk, brexit) {
     brexitData = brexit;
     
     // If processes are deferred earlier in queue than csv's, change demographic_starting_id accordingly
-    var demographic_starting_id = 4;
+    var demographic_starting_id = 3;
     
     /* Put the demographic data into a d3 map in which the key is the HTML
      * option value */
@@ -244,11 +244,6 @@ function updateDemographicView(d) {
                 return d;
             }
         });
-/* Do we need this feature? It broke when I did the restructuring.
-    // Add appropriate CSS styling options to allow for zooming in.
-    d3.selectAll('.container-liquid').style('left', '' + d3.select('#navigation')
-                                     .node()
-                                     .getBoundingClientRect().right + 'px');*/
 }
 
 /* Function to update the left-most map to display the data of the chosen
